@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "770874925941",
+    "project_id": "cardlords3",
+    "storage_bucket": "cardlords3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:770874925941:android:28aff2b37a7392402ba93c",
+        "android_client_info": {
+          "package_name": "com.example.cardlords3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "770874925941-5mluchiv0hkpe08d8eaeot25vljiht53.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwMDEYC4_DToiNYThH8QoovWXw1Nex-Lw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "770874925941-5mluchiv0hkpe08d8eaeot25vljiht53.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,5 @@
 package com.example.cardlords3.ui.login;
-//12341
-//hello
+
 import android.app.Activity;
 
 import androidx.lifecycle.Observer;
