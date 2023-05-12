@@ -21,7 +21,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
 
+import com.example.cardlords3.MenuActivity;
 import com.example.cardlords3.R;
 import com.example.cardlords3.ui.login.LoginViewModel;
 import com.example.cardlords3.ui.login.LoginViewModelFactory;
@@ -132,5 +134,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    //let user login as guest account
+    public void guest_login(View view) {
+        Toast t = Toast.makeText(getApplicationContext(), "Login as guest successfully", Toast.LENGTH_SHORT);
+        t.show();
+
+        //go to menu
+        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        //i.putExtra("key",value);
+        startActivity(i);
+
     }
 }
