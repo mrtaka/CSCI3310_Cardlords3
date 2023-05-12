@@ -51,7 +51,7 @@ public class CardEditorActivity extends AppCompatActivity {
         //  i.e. Set up Grid according to the orientation of phone
         //layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count));
         //mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         Log.e("Tag", "On create run");
 
     }

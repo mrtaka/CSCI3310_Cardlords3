@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     private Context context;
@@ -38,14 +39,27 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     class CardViewHolder extends RecyclerView.ViewHolder {
 
         ImageView CardImageItemView;
+        TextView CardName;
+        TextView CardCost;
+        TextView CardHealth;
+        TextView CardAttack;
+        TextView CardType;
+        TextView CardRace;
         RatingBar CardRarityBar;
 
         final CardListAdapter mAdapter;
 
         public CardViewHolder(View itemView, CardListAdapter adapter) {
             super(itemView);
-            CardImageItemView = itemView.findViewById(R.id.image);
-            CardRarityBar = itemView.findViewById(R.id.flowerBar);
+
+            CardImageItemView = itemView.findViewById(R.id.card_image);
+            CardRarityBar = itemView.findViewById(R.id.starsBar);
+            CardName = itemView.findViewById(R.id.card_name_textview);
+            CardCost = itemView.findViewById(R.id.cost_textview);
+            CardHealth = itemView.findViewById(R.id.health_textview);
+            CardAttack = itemView.findViewById(R.id.attack_textview);
+            CardType = itemView.findViewById(R.id.type_textview);
+            CardRace = itemView.findViewById(R.id.race_textview);
             this.mAdapter = adapter;
 
             // Event handling registration, page navigation goes here
@@ -94,7 +108,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.e("Tag", "onCreateViewHolder run");
         View mItemView = mInflater.inflate(R.layout.cardlist_card, parent, false);
-        Log.e("Tag", "onCreateViewHolder2 run");
+        Log.e("Tag", "onCreateViewHolder run");
         return new CardViewHolder(mItemView, this);
     }
 
@@ -102,23 +116,48 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Log.e("Tag", "onBindViewHolder run");
         String mImagePath = null;
+        String name = null;
+        Integer cost = null;
+        Integer typeID = null;
+        Integer health = null;
+        Integer attack = null;
+        String raceID = null;
         int rarity = 0;
         try {
             mImagePath = CardJsonArray.getJSONObject(position).getString("card_Image");
+            name = CardJsonArray.getJSONObject(position).getString("card_name");
+            cost= CardJsonArray.getJSONObject(position).getInt("cost");
+            typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
+            health = CardJsonArray.getJSONObject(position).getInt("health");
+            attack= CardJsonArray.getJSONObject(position).getInt("attack");
+            raceID = CardJsonArray.getJSONObject(position).getString("raceID");
             rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
+
         } catch (JSONException e) {
             mImagePath = "image01.png";
             rarity = 1;
             e.printStackTrace();
         }
         //check if the rarity has updated or not
-        rarity = 5;
+        //rarity = 3;
         //edit the file path
         mImagePath = mImagePath.replaceFirst("[.][^.]+$", "");
         Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
         // Update the following to display correct information based on the given position
 
         // Set up View items for this row (position), modify to show correct information read from the CSV
+        holder.CardName.setText(name);
+        holder.CardCost.setText(String.valueOf(cost));
+        if(typeID==1){
+            holder.CardType.setText("士");
+        }else if(typeID==2){
+            holder.CardType.setText("將");
+        }else{
+            holder.CardType.setText("魔");
+        }
+        holder.CardHealth.setText(String.valueOf(health));
+        holder.CardAttack.setText(String.valueOf(attack));
+        holder.CardRace.setText(String.valueOf(raceID));
         holder.CardImageItemView.setImageURI(uri);
         holder.CardRarityBar.setRating(rarity);
 
@@ -129,7 +168,6 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     }
 
     @Override
-    //================changed here==========================
     public int getItemCount() {
         return CardJsonArray.length();
     }

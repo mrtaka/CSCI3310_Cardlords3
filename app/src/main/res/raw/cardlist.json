@@ -1,37 +1,100 @@
 {
   "Cards": [
     {
-      "cardID": 1,
-      "card_name": "偵察兵",
-      "card_Image": "image01.png",
-      "typeID": 1,
-      "health": 5,
-      "attack": 2,
-      "skillID": 1,
-      "cost": 3,
-      "rarity": 1
-    },
-    {
       "cardID": 2,
       "card_name": "步兵",
-      "card_Image": "image02.png",
+      "card_Image": "image02.jpg",
       "typeID": 1,
+      "raceID": 1,
       "health": 5,
       "attack": 2,
       "skillID": 1,
       "cost": 3,
-      "rarity": 1
+      "rarity": 4
     },
     {
       "cardID": 3,
       "card_name": "裝甲兵",
-      "card_Image": "image03.png",
+      "card_Image": "image03.jpg",
       "typeID": 1,
+      "raceID": 1,
       "health": 5,
       "attack": 2,
       "skillID": 1,
       "cost": 3,
-      "rarity": 1
+      "rarity": 3
+    },
+    {
+      "cardID": 4,
+      "card_name": "裝甲兵",
+      "card_Image": "image04.jpg",
+      "typeID": 3,
+      "raceID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 3
+    },
+    {
+      "cardID": 1,
+      "card_name": "偵察兵",
+      "card_Image": "image01.png",
+      "typeID": 2,
+      "raceID": 1,
+      "health": 5,
+      "attack": 6,
+      "skillID": 1,
+      "cost": 9,
+      "rarity": 5
+    },
+    {
+      "cardID": 5,
+      "card_name": "裝甲兵",
+      "card_Image": "image05.jpg",
+      "typeID": 1,
+      "raceID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 3
+    },
+    {
+      "cardID": 6,
+      "card_name": "裝甲兵",
+      "card_Image": "image06.jpg",
+      "typeID": 1,
+      "raceID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 3
+    },
+    {
+      "cardID": 7,
+      "card_name": "裝甲兵",
+      "card_Image": "image07.jpg",
+      "typeID": 1,
+      "raceID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 4
+    },
+    {
+      "cardID": 8,
+      "card_name": "裝甲兵",
+      "card_Image": "image08.jpg",
+      "typeID": 1,
+      "raceID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 3
     }
   ]
 }
