@@ -1,37 +1,37 @@
 {
   "Cards": [
     {
-      "CardID": 1,
-      "Card_name": "偵察兵",
-      "Card_Image": "image01.jpg",
-      "TypeID": 1,
-      "Health": 5,
-      "Attack": 2,
-      "SkillID": 1,
-      "Cost": 3,
-      "Rarity": 1
+      "cardID": 1,
+      "card_name": "偵察兵",
+      "card_Image": "image01.png",
+      "typeID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 1
     },
     {
-      "CardID": 2,
-      "Card_name": "步兵",
-      "Card_Image": "image02.jpg",
-      "TypeID": 1,
-      "Health": 5,
-      "Attack": 2,
-      "SkillID": 1,
-      "Cost": 3,
-      "Rarity": 1
+      "cardID": 2,
+      "card_name": "步兵",
+      "card_Image": "image02.png",
+      "typeID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 1
     },
     {
-      "CardID": 3,
-      "Card_name": "裝甲兵",
-      "Card_Image": "image03.jpg",
-      "TypeID": 1,
-      "Health": 5,
-      "Attack": 2,
-      "SkillID": 1,
-      "Cost": 3,
-      "Rarity": 1
+      "cardID": 3,
+      "card_name": "裝甲兵",
+      "card_Image": "image03.png",
+      "typeID": 1,
+      "health": 5,
+      "attack": 2,
+      "skillID": 1,
+      "cost": 3,
+      "rarity": 1
     }
   ]
 }
