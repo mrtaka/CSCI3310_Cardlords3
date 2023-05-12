@@ -169,8 +169,8 @@ public class LoginActivity extends AppCompatActivity {
                                             } else {
                                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                                 //now incorrect pw would also show this.
-                                                Toast.makeText(LoginActivity.this, "Incorrect password for existing account or Account creation failed",
-                                                        Toast.LENGTH_LONG).show();
+                                                Toast.makeText(LoginActivity.this, "Incorrect password",
+                                                        Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -191,13 +191,34 @@ public class LoginActivity extends AppCompatActivity {
 
     //let user login as guest account
     public void guest_login(View view) {
-        Toast t = Toast.makeText(getApplicationContext(), "Login as guest successfully", Toast.LENGTH_SHORT);
-        t.show();
+        String email = "guest@gmail.com";
+        String password = "cardlords3";
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInAsGuest:success");
+                            Toast.makeText(LoginActivity.this, "Login as guest successfully",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+                            //i.putExtra("key",value);
+                            startActivity(i);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Error: cannot login as guest now",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+        //Toast t = Toast.makeText(getApplicationContext(), "Login as guest successfully", Toast.LENGTH_SHORT);
+        //t.show();
 
         //go to menu
-        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        //Intent i = new Intent(getApplicationContext(), MenuActivity.class);
         //i.putExtra("key",value);
-        startActivity(i);
+        //startActivity(i);
 
-    }
+
 }
