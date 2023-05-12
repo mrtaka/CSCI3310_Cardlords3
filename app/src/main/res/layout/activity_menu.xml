@@ -19,7 +19,8 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="pvp_launch"/>
 
     <Button
         android:id="@+id/pve_button"
@@ -33,7 +34,8 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="pve_launch"/>
 
     <Button
         android:id="@+id/card_deck_button"
