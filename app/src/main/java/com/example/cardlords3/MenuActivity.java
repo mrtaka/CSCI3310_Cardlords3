@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class MenuActivity extends AppCompatActivity {
     private static final String TAG = "MenuActivity";
     private FirebaseUser user;
     private int userType;
+    private Button cardEditorButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class MenuActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        cardEditorButton = findViewById(R.id.card_editor_button);
 
         if (user != null) {
             db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -45,7 +48,7 @@ public class MenuActivity extends AppCompatActivity {
                             userType = Math.toIntExact(document.getLong("userType"));
                             Log.d(TAG, "User type: " + userType);
                             if (userType == 0)
-                                findViewById(R.id.card_editor_button).setEnabled(true);
+                                cardEditorButton.setEnabled(true);
                             // Continue processing the user type...
                         } else {
                             Log.d(TAG, "No such document");
@@ -62,6 +65,20 @@ public class MenuActivity extends AppCompatActivity {
                 }
             });
         }
+
+        cardEditorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!cardEditorButton.isEnabled()) {
+                    //not working as intended, to be fixed or abandoned.
+                    Toast.makeText(getApplicationContext(), "Only accessible by admin", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    GoCardEditor(v);
+                }
+            }
+        });
+
     }
 
     //when click pve mode
