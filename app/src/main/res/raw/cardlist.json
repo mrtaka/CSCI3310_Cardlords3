@@ -1,64 +1,37 @@
 {
-  "flowers": [
+  "Cards": [
     {
-      "filename": "image01.jpg",
-      "flower_name": "Trumpet Tree (Science Centre)",
-      "genus": "Handroanthus",
-      "richness": 1
+      "CardID": 1,
+      "Card_name": "偵察兵",
+      "Card_Image": "image01.jpg",
+      "TypeID": 1,
+      "Health": 5,
+      "Attack": 2,
+      "SkillID": 1,
+      "Cost": 3,
+      "Rarity": 1
     },
     {
-      "filename": "image02.jpg",
-      "flower_name": "Dragon Boat Flower (LSK)",
-      "genus": "Ixora",
-      "richness": 3
+      "CardID": 2,
+      "Card_name": "步兵",
+      "Card_Image": "image02.jpg",
+      "TypeID": 1,
+      "Health": 5,
+      "Attack": 2,
+      "SkillID": 1,
+      "Cost": 3,
+      "Rarity": 1
     },
     {
-      "filename": "image03.jpg",
-      "flower_name": "China Rose (NA)",
-      "genus": "Hibiscus",
-      "richness": 3
-    },
-    {
-      "filename": "image04.jpg",
-      "flower_name": "Red Rose (TKP)",
-      "genus": "Rose",
-      "richness": 1
-    },
-    {
-      "filename": "image05.jpg",
-      "flower_name": "Yellow Rose (TKP)",
-      "genus": "Rose",
-      "richness": 1
-    },
-    {
-      "filename": "image06.jpg",
-      "flower_name": "Orange Trumpet (Library)",
-      "genus": "Pyrostegia",
-      "richness": 1
-    },
-    {
-      "filename": "image07.jpg",
-      "flower_name": "Paperflower (Central Ave.)",
-      "genus": "Bougainvillea",
-      "richness": 2
-    },
-    {
-      "filename": "image08.jpg",
-      "flower_name": "Paperflower (UC)",
-      "genus": "Bougainvillea",
-      "richness": 3
-    },
-    {
-      "filename": "image09.jpg",
-      "flower_name": "Cherry Blossom (NA)",
-      "genus": "Prunus",
-      "richness": 2
-    },
-    {
-      "filename": "image10.jpg",
-      "flower_name": "Trailing Lantana (Forum)",
-      "genus": "Lantana",
-      "richness": 2
+      "CardID": 3,
+      "Card_name": "裝甲兵",
+      "Card_Image": "image03.jpg",
+      "TypeID": 1,
+      "Health": 5,
+      "Attack": 2,
+      "SkillID": 1,
+      "Cost": 3,
+      "Rarity": 1
     }
   ]
 }
