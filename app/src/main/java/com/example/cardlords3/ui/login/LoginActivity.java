@@ -1,17 +1,10 @@
 package com.example.cardlords3.ui.login;
 //12341
 //hello
+
 import android.app.Activity;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -23,9 +16,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.cardlords3.R;
-import com.example.cardlords3.ui.login.LoginViewModel;
-import com.example.cardlords3.ui.login.LoginViewModelFactory;
 import com.example.cardlords3.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
@@ -46,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
         final Button loginButton = binding.login;
+        final Button tempPlayButton = binding.tempPlay;
         final ProgressBar loadingProgressBar = binding.loading;
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -121,6 +119,20 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
+            }
+        });
+
+        tempPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast toast = Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_SHORT);
+                toast.show();
+                Intent intent = new Intent(v.getContext(), GameActivity.class); //Set target activity
+                startActivity(intent);
+                //intent.putExtra("item", itemsString);//Send item json to target activity
+                //intent.putExtra("position", position);//Send position to target activity
+                //v.getContext().startActivity(intent); //Launch new activity - startActivity instead of startActivityForResult
+                //((Activity)context).startActivityForResult(intent,1); //Launch target activity with values
             }
         });
     }
