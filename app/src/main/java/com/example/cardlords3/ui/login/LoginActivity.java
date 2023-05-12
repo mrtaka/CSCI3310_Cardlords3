@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(LoginActivity.this, "Logged in.",
+                            Toast.makeText(LoginActivity.this, "Login successfully",
                                     Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(getApplicationContext(), MenuActivity.class);
                             //i.putExtra("key",value);
@@ -164,13 +164,13 @@ public class LoginActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<AuthResult> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "createUserWithEmail:success");
-                                                Toast.makeText(LoginActivity.this, "Account created. Press the button again to login!",
-                                                        Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginActivity.this, "Account created. Press the 'SIGN IN OR REGISTER' button again to login!",
+                                                        Toast.LENGTH_LONG).show();
                                             } else {
                                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                                 //now incorrect pw would also show this.
-                                                Toast.makeText(LoginActivity.this, "Account creation failed.",
-                                                        Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginActivity.this, "Incorrect password for existing account or Account creation failed",
+                                                        Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
