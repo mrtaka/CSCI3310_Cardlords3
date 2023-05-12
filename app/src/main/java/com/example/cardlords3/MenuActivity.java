@@ -25,12 +25,13 @@ public class MenuActivity extends AppCompatActivity {
 
     private static final String TAG = "MenuActivity";
     private FirebaseUser user;
+    private int userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        //test.
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -41,8 +42,10 @@ public class MenuActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            int userType = Math.toIntExact(document.getLong("userType"));
+                            userType = Math.toIntExact(document.getLong("userType"));
                             Log.d(TAG, "User type: " + userType);
+                            if (userType == 0)
+                                findViewById(R.id.card_editor_button).setEnabled(true);
                             // Continue processing the user type...
                         } else {
                             Log.d(TAG, "No such document");
@@ -85,6 +88,7 @@ public class MenuActivity extends AppCompatActivity {
 
     //when click CardEditor
     public void GoCardEditor(View view) {
+
         Intent intent = new Intent(this, CardEditorActivity.class); //Set target activity
         startActivity(intent);
     }
