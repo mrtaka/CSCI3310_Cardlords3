@@ -16,6 +16,10 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 public class CardEditorActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
@@ -42,7 +46,7 @@ public class CardEditorActivity extends AppCompatActivity {
         // initially just a list of image path
         // TODO: Update and pass more information as needed
         //================changed here==========================
-        mAdapter = new CardListAdapter(this, CardJsonArray);
+        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager());
 
         // Connect the adapter with the RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
@@ -55,6 +59,11 @@ public class CardEditorActivity extends AppCompatActivity {
         Log.e("Tag", "On create run");
 
     }
+
+    public FragmentManager getMyFragmentManager() {
+        return getSupportFragmentManager();
+    }
+
 
     private void loadJson(){
         try{
