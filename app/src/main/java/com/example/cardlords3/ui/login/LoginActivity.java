@@ -1,6 +1,4 @@
 package com.example.cardlords3.ui.login;
-//12341
-//hello
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -22,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.cardlords3.MenuActivity;
 import com.example.cardlords3.R;
 import com.example.cardlords3.databinding.ActivityLoginBinding;
 
@@ -145,5 +145,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    //let user login as guest account
+    public void guest_login(View view) {
+        Toast t = Toast.makeText(getApplicationContext(), "Login as guest successfully", Toast.LENGTH_SHORT);
+        t.show();
+
+        //go to menu
+        Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+        //i.putExtra("key",value);
+        startActivity(i);
+
     }
 }
