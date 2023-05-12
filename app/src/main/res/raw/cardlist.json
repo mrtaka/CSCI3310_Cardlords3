@@ -1,0 +1,64 @@
+{
+  "flowers": [
+    {
+      "filename": "image01.jpg",
+      "flower_name": "Trumpet Tree (Science Centre)",
+      "genus": "Handroanthus",
+      "richness": 1
+    },
+    {
+      "filename": "image02.jpg",
+      "flower_name": "Dragon Boat Flower (LSK)",
+      "genus": "Ixora",
+      "richness": 3
+    },
+    {
+      "filename": "image03.jpg",
+      "flower_name": "China Rose (NA)",
+      "genus": "Hibiscus",
+      "richness": 3
+    },
+    {
+      "filename": "image04.jpg",
+      "flower_name": "Red Rose (TKP)",
+      "genus": "Rose",
+      "richness": 1
+    },
+    {
+      "filename": "image05.jpg",
+      "flower_name": "Yellow Rose (TKP)",
+      "genus": "Rose",
+      "richness": 1
+    },
+    {
+      "filename": "image06.jpg",
+      "flower_name": "Orange Trumpet (Library)",
+      "genus": "Pyrostegia",
+      "richness": 1
+    },
+    {
+      "filename": "image07.jpg",
+      "flower_name": "Paperflower (Central Ave.)",
+      "genus": "Bougainvillea",
+      "richness": 2
+    },
+    {
+      "filename": "image08.jpg",
+      "flower_name": "Paperflower (UC)",
+      "genus": "Bougainvillea",
+      "richness": 3
+    },
+    {
+      "filename": "image09.jpg",
+      "flower_name": "Cherry Blossom (NA)",
+      "genus": "Prunus",
+      "richness": 2
+    },
+    {
+      "filename": "image10.jpg",
+      "flower_name": "Trailing Lantana (Forum)",
+      "genus": "Lantana",
+      "richness": 2
+    }
+  ]
+}
