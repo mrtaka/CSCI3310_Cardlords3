@@ -7,13 +7,14 @@
     android:background="#bfd3e0"
     tools:context=".CardEditorActivity">
 
-
     <TextView
         android:id="@+id/cost_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
         android:shadowColor="#000000"
         android:shadowDx="1.5"
         android:shadowDy="1.3"
@@ -22,29 +23,29 @@
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:textSize="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cardRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/cardRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true" />
 
     </LinearLayout>
 

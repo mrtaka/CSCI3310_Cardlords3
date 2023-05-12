@@ -28,6 +28,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
                         android:text="CardName" />
                     <EditText
                         android:id="@+id/edit_name"
@@ -37,11 +38,13 @@
                         android:layout_marginRight="10dp"
                         android:ems="10"
                         android:inputType="textPersonName"
+                        android:textColor="@color/Grey"
                         android:text="Name of Card"
-                        android:textSize="10dp" />
+                        android:textSize="12dp" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
                         android:text="Cost" />
                     <EditText
                         android:id="@+id/editCost"
@@ -51,13 +54,15 @@
                         android:layout_marginRight="10dp"
                         android:inputType="number"
                         android:ems="10"
-                        android:textSize="10dp"/>
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"/>
                 </TableRow>
 
                 <TableRow>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
                         android:text="Health" />
                     <EditText
                         android:id="@+id/editHealth"
@@ -66,10 +71,12 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:inputType="number"
-                        android:textSize="10dp"/>
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
                         android:text="Attack" />
                     <EditText
                         android:id="@+id/editAttack"
@@ -78,21 +85,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:inputType="number"
-                        android:textSize="10dp"/>
-
-                </TableRow>
-
-                <TableRow>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Type" />
-                    <EditText
-                        android:id="@+id/editType"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:textSize="10dp"/>
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"/>
                 </TableRow>
 
             </TableLayout>
