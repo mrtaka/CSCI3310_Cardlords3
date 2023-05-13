@@ -113,7 +113,9 @@ public class MenuActivity extends AppCompatActivity {
 
     //when click logout
     public void logout(View view) {
-        super.onBackPressed();
+        FirebaseAuth.getInstance().signOut();
+        finish();
+        //super.onBackPressed();
     }
 
 }
