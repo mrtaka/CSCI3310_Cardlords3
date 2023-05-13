@@ -1,17 +1,13 @@
 package com.example.cardlords3.game.main;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cardlords3.R;
-
-import java.util.Random;
 
 
 public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHolder> {
@@ -24,8 +20,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
     @NonNull
     @Override
     public CellViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //View view = LayoutInflater.from(parent.getContext())
+        //        .inflate(R.layout.fragment_cell, parent, false);
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_cell, parent, false);
+                .inflate(R.layout.cardlist_card_board, parent, false);
 
 
         // Set the height of the view to be divided by 5
@@ -42,10 +40,15 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         int row = position / boardData.length;
         int col = position % boardData.length;
         //TODO Set Cell Data
+        //To rotate 180
+        //holder.itemView.setRotation(180);
+
+        /*
         Random rand = new Random();
         String mImagePath = "image_" + (char)(rand.nextInt(18)+97);
         Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
         ((ImageView)holder.itemView.findViewById(R.id.image_cell)).setImageURI(uri);
+        */
         //holder.cellFragment.setCellValue(boardData[row][col]);
     }
 

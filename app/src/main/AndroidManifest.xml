@@ -16,7 +16,14 @@
         android:theme="@style/Theme.Cardlords3"
         tools:targetApi="33">
         <activity
-            android:name=".BoardAdapter"
+            android:name=".game.main.BoardAdapter"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".CardEditorActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="false">
@@ -33,18 +40,10 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.login.GameActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".game.GameActivity"
             android:exported="false"
             android:label="@string/title_activity_game"
-            android:theme="@style/Theme.Cardlords3.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#e0d3bf"
     tools:context=".game.GameActivity">
 
     <LinearLayout
@@ -11,11 +12,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!--
         <FrameLayout
             android:id="@+id/p2_hand_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="20" />
+        -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cardRecyclerViewEnemyHand"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="0dp"
+            android:layout_weight="20"
+            android:rotation="180" />
 
         <FrameLayout
             android:id="@+id/board_fragment_container"
@@ -23,11 +35,21 @@
             android:layout_height="0dp"
             android:layout_weight="60" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cardRecyclerViewOwnHand"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="0dp"
+            android:layout_weight="20" />
+
+        <!--
         <FrameLayout
             android:id="@+id/p1_hand_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="20" />
+        -->
 
     </LinearLayout>
 
