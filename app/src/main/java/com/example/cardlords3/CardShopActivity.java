@@ -1,11 +1,10 @@
 package com.example.cardlords3;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,41 +13,31 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+public class CardShopActivity extends AppCompatActivity {
 
-public class CardEditorActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
-
     private JSONArray CardJsonArray = new JSONArray();
-    RecyclerView.LayoutManager layoutManager;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_card_editor);
+        setContentView(R.layout.activity_card_shop);
 
-        //load default data from json
+        //load each type of cd data from json
         loadJson();
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
-        //load a default creation card
-        addCreateCard();
-        Log.e("Tag", "the added creation card CardJsonArray is " + CardJsonArray);
-
         //create recyclerview
         mRecyclerView = findViewById(R.id.cardRecyclerView);
-        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 2);
+        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 1);
         // Connect the adapter with the RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
         // Give the RecyclerView a default layout manager.
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
+        //layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count)));
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void loadJson(){
@@ -80,35 +69,6 @@ public class CardEditorActivity extends AppCompatActivity {
         }catch (Exception e)
         {
             Log.e("Tag", "loadJson: error "+e);
-        }
-    }
-
-    private void addCreateCard(){
-        //first add a default add_card on position 0
-        try {
-            JSONObject addCardJsonObject = new JSONObject();
-            addCardJsonObject.put("cardID", -2);
-            addCardJsonObject.put("card_name", "");
-            addCardJsonObject.put("card_Image", "image_createcard");
-            addCardJsonObject.put("typeID", -1);
-            addCardJsonObject.put("raceID", -1);
-            addCardJsonObject.put("health", -1);
-            addCardJsonObject.put("attack", -1);
-            addCardJsonObject.put("skillID", -1);
-            addCardJsonObject.put("cost", -1);
-            addCardJsonObject.put("rarity", -1);
-
-            // Shift the existing elements to the right
-            for (int i = CardJsonArray.length() - 1; i >= 0; i--) {
-                CardJsonArray.put(i + 1, CardJsonArray.get(i));
-            }
-
-            // Insert the new object at the front of the array
-            CardJsonArray.put(0, addCardJsonObject);
-
-        }catch (Exception e)
-        {
-            Log.e("Tag", "from inventory Json: error "+e);
         }
     }
 }

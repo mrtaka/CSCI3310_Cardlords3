@@ -98,8 +98,8 @@ public class CardDeckFragment extends Fragment {
         }else if(Param_type==2){
             type.setText("將軍");
         }else{
-            type.setText("魔兵");
+            type.setText("魔法");
         }
-        
+
     }
 }

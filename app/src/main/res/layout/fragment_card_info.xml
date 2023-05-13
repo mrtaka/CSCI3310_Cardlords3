@@ -55,21 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Grey"
-                    android:text="Type" />
-                <TextView
-                    android:id="@+id/showType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:inputType="number"
-                    android:textColor="@color/Grey"
-                    android:textSize="12dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/Grey"
                     android:text="Cost" />
                 <TextView
                     android:id="@+id/showCost"
@@ -81,16 +66,14 @@
                     android:ems="10"
                     android:textColor="@color/Grey"
                     android:textSize="12dp"/>
-            </TableRow>
 
-            <TableRow>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Grey"
-                    android:text="Health" />
+                    android:text="Type" />
                 <TextView
-                    android:id="@+id/showHealth"
+                    android:id="@+id/showType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -98,6 +81,11 @@
                     android:inputType="number"
                     android:textColor="@color/Grey"
                     android:textSize="12dp"/>
+
+            </TableRow>
+
+            <TableRow>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -112,6 +100,22 @@
                     android:inputType="number"
                     android:textColor="@color/Grey"
                     android:textSize="12dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Grey"
+                    android:text="Health" />
+                <TextView
+                    android:id="@+id/showHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:inputType="number"
+                    android:textColor="@color/Grey"
+                    android:textSize="12dp"/>
+
             </TableRow>
         </TableLayout>
 

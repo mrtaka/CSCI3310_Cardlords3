@@ -45,7 +45,6 @@ public class CardDeckActivity extends AppCompatActivity {
         //layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count));
         //mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        Log.e("Tag", "On create run");
     }
 
     public FragmentManager getMyFragmentManager() {
@@ -86,6 +85,21 @@ public class CardDeckActivity extends AppCompatActivity {
 
     private void inventoryJson(int[] inventory){
         try{
+            //first add a default add_card on position 0
+            JSONObject addCardJsonObject = new JSONObject();
+            addCardJsonObject.put("cardID", -1);
+            addCardJsonObject.put("card_name", "");
+            addCardJsonObject.put("card_Image", "image_addcard");
+            addCardJsonObject.put("typeID", -1);
+            addCardJsonObject.put("raceID", -1);
+            addCardJsonObject.put("health", -1);
+            addCardJsonObject.put("attack", -1);
+            addCardJsonObject.put("skillID", -1);
+            addCardJsonObject.put("cost", -1);
+            addCardJsonObject.put("rarity", -1);
+
+            InventoryJsonArray.put(addCardJsonObject);
+
             //now all the card object details to each card of the inventory
             for(int i=0; i<inventory.length; i++){
 

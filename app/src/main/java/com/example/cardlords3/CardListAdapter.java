@@ -84,10 +84,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
                     t.show();
 
-                    //=====================go to fragment==========================
-                    FragmentManager fragmentManager = mFragmentManager;
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
+                    //Get this card detail info
+                    Integer cardID = null;
                     String mImagePath = null;
                     String name = null;
                     Integer cost = null;
@@ -98,6 +96,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     int rarity = 0;
                     //get all detail info of a card
                     try {
+                        cardID = CardJsonArray.getJSONObject(position).getInt("cardID");
                         mImagePath = CardJsonArray.getJSONObject(position).getString("card_Image");
                         name = CardJsonArray.getJSONObject(position).getString("card_name");
                         cost= CardJsonArray.getJSONObject(position).getInt("cost");
@@ -113,47 +112,62 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         e.printStackTrace();
                     }
 
-                    //use bundle to pass data to fragment
-                    Bundle mBundle = new Bundle();
-                    mBundle.putString("image", mImagePath);
-                    mBundle.putString("name", name);
-                    mBundle.putInt("cost", cost);
-                    mBundle.putInt("typeID", typeID);
-                    mBundle.putInt("health", health);
-                    mBundle.putInt("attack", attack);
-                    mBundle.putInt("rarity", rarity);
-                    mBundle.putString("raceID", raceID);
-
-                    //see which fragment is used
-                    if(FragmentType == 1){
-                        InfoFragment = new CardDeckFragment();
-                        InfoFragment.setArguments(mBundle);
-                        //see if fragment exist or not
-                        if(FragmentExist == false){
-                            fragmentTransaction.add(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
-                        }else{
-                            fragmentTransaction.replace(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
-                        }
-                    }else{
-                        EditFragment = new CardEditorFragment();
-                        EditFragment.setArguments(mBundle);
-                        //see if fragment exist or not
-                        if(FragmentExist == false){
-                            fragmentTransaction.add(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
-                        }else{
-                            fragmentTransaction.replace(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
-                        }
+                    if(cardID == -1){//=====================go to CardShopActivity==========================
+                        Intent intent = new Intent(v.getContext(), CardShopActivity.class); //set the target activity
+                        intent.putExtra("position", position);//send position to new activity
+                        ((Activity)context).startActivityForResult(intent,1); //launch new activity
                     }
-
-                    //add new fragment to backstack
-                    if(FragmentExist == false){
-                        FragmentExist = true;
-                        fragmentTransaction.addToBackStack(null);
-                    }else{
-                        fragmentManager.popBackStack();
-                        fragmentTransaction.addToBackStack(null);
+                    else if(cardID == -2){//=====================go to CardCreationActivity==========================
+                        Intent intent = new Intent(v.getContext(), CardCreationActivity.class); //set the target activity
+                        intent.putExtra("position", position);//send position to new activity
+                        ((Activity)context).startActivityForResult(intent,1); //launch new activity
                     }
-                    fragmentTransaction.commit();
+                    else {//=====================create fragment==========================
+                        FragmentManager fragmentManager = mFragmentManager;
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                        //use bundle to pass data to fragment
+                        Bundle mBundle = new Bundle();
+                        mBundle.putString("image", mImagePath);
+                        mBundle.putString("name", name);
+                        mBundle.putInt("cost", cost);
+                        mBundle.putInt("typeID", typeID);
+                        mBundle.putInt("health", health);
+                        mBundle.putInt("attack", attack);
+                        mBundle.putInt("rarity", rarity);
+                        mBundle.putString("raceID", raceID);
+
+                        //see which fragment is used
+                        if (FragmentType == 1) { //create info fragment
+                            InfoFragment = new CardDeckFragment();
+                            InfoFragment.setArguments(mBundle);
+                            //see if fragment exist or not
+                            if (FragmentExist == false) {
+                                fragmentTransaction.add(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
+                            } else {
+                                fragmentTransaction.replace(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
+                            }
+                        } else {//create Edit fragment
+                            EditFragment = new CardEditorFragment();
+                            EditFragment.setArguments(mBundle);
+                            //see if fragment exist or not
+                            if (FragmentExist == false) {
+                                fragmentTransaction.add(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
+                            } else {
+                                fragmentTransaction.replace(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
+                            }
+                        }
+
+                        //add new fragment to backstack
+                        if (FragmentExist == false) {
+                            FragmentExist = true;
+                            fragmentTransaction.addToBackStack(null);
+                        } else {
+                            fragmentManager.popBackStack();
+                            fragmentTransaction.addToBackStack(null);
+                        }
+                        fragmentTransaction.commit();
+                    }
 
                 }
             });
@@ -167,7 +181,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
         this.CardJsonArray = CardJsonArray;
         this.context = context;
         this.mFragmentManager = fragmentManager;
-        this.FragmentType = FragmentType; //1 is Info Fragment, 2 is EditFragment
+        this.FragmentType = FragmentType; //1 is Info Fragment, 2 is EditFragment, 3 is buyCard
     }
 
     @NonNull
@@ -213,17 +227,26 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
 
         // Set up View items for this row (position), modify to show correct information read from the CSV
         holder.CardName.setText(name);
-        holder.CardCost.setText(String.valueOf(cost));
         if(typeID==1){
             holder.CardType.setText("士");
         }else if(typeID==2){
             holder.CardType.setText("將");
-        }else{
+        }else if(typeID==3){
             holder.CardType.setText("魔");
+        }else{
+            holder.CardType.setText("");
         }
-        holder.CardHealth.setText(String.valueOf(health));
-        holder.CardAttack.setText(String.valueOf(attack));
-        holder.CardRace.setText(String.valueOf(raceID));
+        if(rarity==-1){
+            holder.CardCost.setText("");
+            holder.CardHealth.setText("");
+            holder.CardAttack.setText("");
+            holder.CardRace.setText("");
+        }else{
+            holder.CardCost.setText(String.valueOf(cost));
+            holder.CardHealth.setText(String.valueOf(health));
+            holder.CardAttack.setText(String.valueOf(attack));
+            holder.CardRace.setText(String.valueOf(raceID));
+        }
         holder.CardImageItemView.setImageURI(uri);
         holder.CardRarityBar.setRating(rarity);
 
