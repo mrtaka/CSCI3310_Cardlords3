@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.cardlords3.ui.login.GameActivity;
+import com.example.cardlords3.game.GameActivity;
 
 public class MenuActivity extends AppCompatActivity {
 

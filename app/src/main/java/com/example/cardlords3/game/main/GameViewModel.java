@@ -1,4 +1,4 @@
-package com.example.cardlords3.ui.login.ui.main;
+package com.example.cardlords3.game.main;
 
 import androidx.lifecycle.ViewModel;
 

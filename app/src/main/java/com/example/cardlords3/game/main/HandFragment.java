@@ -1,4 +1,4 @@
-package com.example.cardlords3.ui.login.ui.main;
+package com.example.cardlords3.game.main;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,12 +12,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.cardlords3.R;
 
-public class GameFragment extends Fragment {
+public class HandFragment extends Fragment {
 
     private GameViewModel mViewModel;
 
-    public static GameFragment newInstance() {
-        return new GameFragment();
+    public static HandFragment newInstance() {
+        return new HandFragment();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class GameFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return inflater.inflate(R.layout.board_fragment, container, false);
     }
 
 }
