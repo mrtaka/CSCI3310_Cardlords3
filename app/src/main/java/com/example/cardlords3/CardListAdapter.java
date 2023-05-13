@@ -37,12 +37,16 @@ import androidx.fragment.app.FragmentTransaction;
 public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     private Context context;
     private LayoutInflater mInflater;
-    CardEditorFragment EditFragment;
-    boolean FragmentExist = false;
-    private FragmentManager mFragmentManager;
 
-    //================changed here==========================
     private JSONArray CardJsonArray = new JSONArray();
+
+    //Fragment related
+    CardEditorFragment EditFragment;
+    CardDeckFragment InfoFragment;
+
+    boolean FragmentExist = false;
+    Integer FragmentType = 1;
+    private FragmentManager mFragmentManager;
 
     class CardViewHolder extends RecyclerView.ViewHolder {
 
@@ -80,29 +84,9 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
                     t.show();
 
-                    /*
-                    //=====================go to edit page==========================
-                    String itemsString;
-                    try {
-                        JSONObject items = CardJsonArray.getJSONObject(position);
-                        itemsString = items.toString();
-                    } catch (JSONException e) {
-                        JSONObject items = new JSONObject();
-                        itemsString = "null";
-                        e.printStackTrace();
-                    }
-                    Intent intent = new Intent(v.getContext(), DetailActivity.class); //set the target activity
-                    intent.putExtra("item", itemsString);//send item json to new activity
-                    intent.putExtra("position", position);//send position to new activity
-                    ((Activity)context).startActivityForResult(intent,1); //launch new activity
-                    //v.getContext().startActivity(intent); //launch new activity
-                     */
-                    //=====================go to edit fragment==========================
-                    //editFragment();
-                    //FragmentManager fm = getSupportFragmentManager();
+                    //=====================go to fragment==========================
                     FragmentManager fragmentManager = mFragmentManager;
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
 
                     String mImagePath = null;
                     String name = null;
@@ -112,6 +96,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     Integer attack = null;
                     String raceID = null;
                     int rarity = 0;
+                    //get all detail info of a card
                     try {
                         mImagePath = CardJsonArray.getJSONObject(position).getString("card_Image");
                         name = CardJsonArray.getJSONObject(position).getString("card_name");
@@ -128,7 +113,6 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         e.printStackTrace();
                     }
 
-                    EditFragment = new CardEditorFragment();
                     //use bundle to pass data to fragment
                     Bundle mBundle = new Bundle();
                     mBundle.putString("image", mImagePath);
@@ -139,16 +123,33 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     mBundle.putInt("attack", attack);
                     mBundle.putInt("rarity", rarity);
                     mBundle.putString("raceID", raceID);
-                    EditFragment.setArguments(mBundle);
 
+                    //see which fragment is used
+                    if(FragmentType == 1){
+                        InfoFragment = new CardDeckFragment();
+                        InfoFragment.setArguments(mBundle);
+                        //see if fragment exist or not
+                        if(FragmentExist == false){
+                            fragmentTransaction.add(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
+                        }else{
+                            fragmentTransaction.replace(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
+                        }
+                    }else{
+                        EditFragment = new CardEditorFragment();
+                        EditFragment.setArguments(mBundle);
+                        //see if fragment exist or not
+                        if(FragmentExist == false){
+                            fragmentTransaction.add(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
+                        }else{
+                            fragmentTransaction.replace(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
+                        }
+                    }
 
-                    //see if fragment exist or not, if yes then replace
+                    //add new fragment to backstack
                     if(FragmentExist == false){
-                        fragmentTransaction.add(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
                         FragmentExist = true;
                         fragmentTransaction.addToBackStack(null);
                     }else{
-                        fragmentTransaction.replace(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
                         fragmentManager.popBackStack();
                         fragmentTransaction.addToBackStack(null);
                     }
@@ -160,16 +161,13 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
         }
     }
 
-    private void editFragment(){
-
-    }
-
     //================changed here==========================
-    public CardListAdapter(Context context, JSONArray CardJsonArray, FragmentManager fragmentManager) {
+    public CardListAdapter(Context context, JSONArray CardJsonArray, FragmentManager fragmentManager, Integer FragmentType) {
         mInflater = LayoutInflater.from(context);
         this.CardJsonArray = CardJsonArray;
         this.context = context;
         this.mFragmentManager = fragmentManager;
+        this.FragmentType = FragmentType; //1 is Info Fragment, 2 is EditFragment
     }
 
     @NonNull

@@ -1,20 +1,20 @@
 package com.example.cardlords3;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CardEditorFragment#newInstance} factory method to
+ * Use the {@link CardDeckFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CardEditorFragment extends Fragment {
+public class CardDeckFragment extends Fragment {
     // TODO: Create member attribute for UI display
 
     // TODO: Rename parameter arguments, choose names that match
@@ -32,7 +32,7 @@ public class CardEditorFragment extends Fragment {
     private int Param_type;
     private int Param_rarity;
 
-    public CardEditorFragment() {
+    public CardDeckFragment() {
         // Required empty public constructor
     }
 
@@ -44,8 +44,8 @@ public class CardEditorFragment extends Fragment {
      * @return A new instance of fragment BlankFragmentD.
      */
     // TODO: Rename and change types and number of parameters
-    public static CardEditorFragment newInstance(String gender, String param2) {
-        CardEditorFragment fragment = new CardEditorFragment();
+    public static CardDeckFragment newInstance(String gender, String param2) {
+        CardDeckFragment fragment = new CardDeckFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM0, gender);
         args.putString(ARG_PARAM1, gender);
@@ -71,7 +71,7 @@ public class CardEditorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_card_editor, container, false);
+        return inflater.inflate(R.layout.fragment_card_info, container, false);
     }
 
     @Override
@@ -79,18 +79,27 @@ public class CardEditorFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // TODO:
         //  1. get reference of the views and assign with received value
-        EditText name = view.findViewById(R.id.edit_name);
+        TextView name = view.findViewById(R.id.showName);
         name.setText(Param_cardName);
 
-        EditText cost = view.findViewById(R.id.editCost);
+        TextView cost = view.findViewById(R.id.showCost);
         //cost.setInputType(InputType.TYPE_CLASS_NUMBER);
         cost.setText(String.valueOf(Param_cost));
 
-        EditText health = view.findViewById(R.id.editHealth);
+        TextView health = view.findViewById(R.id.showHealth);
         health.setText(String.valueOf(Param_health));
 
-        EditText attack = view.findViewById(R.id.editAttack);
+        TextView attack = view.findViewById(R.id.showAttack);
         attack.setText(String.valueOf(Param_attack));
 
+        TextView type = view.findViewById(R.id.showType);
+        if(Param_type==1){
+            type.setText("士兵");
+        }else if(Param_type==2){
+            type.setText("將軍");
+        }else{
+            type.setText("魔兵");
+        }
+        
     }
 }

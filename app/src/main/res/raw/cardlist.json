@@ -1,7 +1,7 @@
 {
   "Cards": [
     {
-      "cardID": 2,
+      "cardID": 1,
       "card_name": "步兵",
       "card_Image": "image02.jpg",
       "typeID": 1,
@@ -13,7 +13,7 @@
       "rarity": 4
     },
     {
-      "cardID": 3,
+      "cardID": 2,
       "card_name": "裝甲兵",
       "card_Image": "image03.jpg",
       "typeID": 1,
@@ -25,7 +25,7 @@
       "rarity": 3
     },
     {
-      "cardID": 4,
+      "cardID": 3,
       "card_name": "裝甲兵",
       "card_Image": "image04.jpg",
       "typeID": 3,
@@ -37,7 +37,7 @@
       "rarity": 3
     },
     {
-      "cardID": 1,
+      "cardID": 4,
       "card_name": "偵察兵",
       "card_Image": "image01.png",
       "typeID": 2,

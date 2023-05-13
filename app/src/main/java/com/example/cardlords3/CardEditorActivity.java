@@ -33,37 +33,22 @@ public class CardEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_editor);
 
-        //==================== self-make =====================
         //load default data from json
         loadJson();
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
-        //load updated data (rarity only) from share preference
-        //loadSharePreference();
-        //Log.e("Tag", "updated list is"+ updatedrarityList);
-        // Get a handle to the RecyclerView.
-        mRecyclerView = findViewById(R.id.cardRecyclerView);
-        // Create an adapter and supply the data to be displayed,
-        // initially just a list of image path
-        // TODO: Update and pass more information as needed
-        //================changed here==========================
-        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager());
 
+        //create recyclerview
+        mRecyclerView = findViewById(R.id.cardRecyclerView);
+        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 2);
         // Connect the adapter with the RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
         // Give the RecyclerView a default layout manager.
-        // TODO: Update the layout manager
-        //  i.e. Set up Grid according to the orientation of phone
         //layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count));
         //mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         Log.e("Tag", "On create run");
 
     }
-
-    public FragmentManager getMyFragmentManager() {
-        return getSupportFragmentManager();
-    }
-
 
     private void loadJson(){
         try{
@@ -84,7 +69,6 @@ public class CardEditorActivity extends AppCompatActivity {
             CardJsonArray = new JSONArray(jsonObject.getString("Cards"));
             //Log.e("Tag", "the jsonArray is " + CardJsonArray);
             max = CardJsonArray.length();
-            //Log.e("Tag", "the jsonArray max is " + max);
 
             //now fetch each json items
             for(int i=0; i<max; i++){
