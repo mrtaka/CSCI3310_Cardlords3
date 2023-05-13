@@ -97,11 +97,22 @@ public class GameActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Own Deck View clicked!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        TextView enemyDataTextView = findViewById(R.id.enemyDataView);
+        TextView ownDataTextView = findViewById(R.id.ownDataView);
+
+        loadData(3, 12, 5, enemyDataTextView);
+        loadData(5, 9, 8, ownDataTextView);
     }
 
     private void loadDeck(int deckSize, View deckView, TextView deckTextView) {
         deckTextView.setText(String.valueOf(deckSize));
         deckView.invalidate();
+    }
+
+    private void loadData(int manaCount, int movesCount, int handCount, TextView dataTextView) {
+        dataTextView.setText("Mana:   "+String.valueOf(manaCount)+"\nMoves:  "+String.valueOf(movesCount)+"\nHand:   "+String.valueOf(handCount));
+        dataTextView.invalidate();
     }
 
     private void loadHand(int[] handInventory, RecyclerView handView) {
