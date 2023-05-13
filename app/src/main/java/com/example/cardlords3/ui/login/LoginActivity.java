@@ -150,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            passwordEditText.setText("");
                             Log.d(TAG, "signInWithEmail:success");
                             Toast.makeText(LoginActivity.this, "Login successfully",
                                     Toast.LENGTH_SHORT).show();
@@ -167,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 Toast.makeText(LoginActivity.this, "Account created. Press the 'SIGN IN OR REGISTER' button again to login!",
                                                         Toast.LENGTH_LONG).show();
                                             } else {
+                                                passwordEditText.setText("");
                                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                                 //now incorrect pw would also show this.
                                                 Toast.makeText(LoginActivity.this, "Incorrect password",
