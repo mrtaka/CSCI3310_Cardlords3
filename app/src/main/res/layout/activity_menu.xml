@@ -49,13 +49,15 @@
         android:layout_marginBottom="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="GoCardDeck"/>
 
     <Button
         android:id="@+id/card_editor_button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="#76b5c5"
+        android:enabled="false"
         android:text="Card Editor"
         android:textColor="@android:color/white"
         android:textSize="20sp"
@@ -64,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
+        <!-- android:onClick="GoCardEditor"   /> -->
 
     <Button
         android:id="@+id/logout_button"
@@ -71,12 +74,12 @@
         android:layout_height="wrap_content"
         android:background="#76b5c5"
         android:text="Logout"
-        android:onClick="logout"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:layout_marginBottom="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="logout"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
