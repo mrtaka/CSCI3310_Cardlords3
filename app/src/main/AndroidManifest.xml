@@ -16,25 +16,41 @@
         android:theme="@style/Theme.Cardlords3"
         tools:targetApi="33">
         <activity
+            android:name=".CardCreationActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".CardShopActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".game.main.BoardAdapter"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".CardEditorActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".CardDeckActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
