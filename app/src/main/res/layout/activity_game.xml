@@ -26,14 +26,229 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_height="0dp"
-            android:layout_weight="20"
+            android:layout_weight="15"
             android:rotation="180" />
 
-        <FrameLayout
-            android:id="@+id/board_fragment_container"
+
+        <LinearLayout
             android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_height="0dp"
-            android:layout_weight="60" />
+            android:layout_weight="70"
+            android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_weight="30"
+                    android:orientation="vertical">
+                        <FrameLayout
+                            android:id="@+id/enemy_base_fragment_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:layout_marginBottom="0dp" />
+
+                        <FrameLayout
+                            android:id="@+id/board_fragment_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="60" />
+
+                        <FrameLayout
+                            android:id="@+id/own_base_fragment_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="5"
+                            android:layout_marginTop="0dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_weight="90"
+                    android:orientation="vertical">
+
+                        <!--EnemyData-->
+                        <TextView
+                            android:id="@+id/enemyDataView"
+                            android:layout_width="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="8"
+                            android:rotation="180"
+                            android:text="Mana:  10\nMoves:  3"
+                            android:shadowColor="#000000"
+                            android:shadowDx="1.5"
+                            android:shadowDy="1.3"
+                            android:shadowRadius="2.0"
+                            android:textAllCaps="false"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"/>
+                        <!--EnemyData-->
+
+                        <!--EnemyDeck-->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/enemy_deck"
+                            android:layout_width="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="20"
+                            android:orientation="vertical"
+                            android:rotation="180">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:cardElevation="10dp"
+                                app:cardCornerRadius="10dp"
+                                android:layout_margin="10dp"
+                                app:cardBackgroundColor="@color/teal_700"
+                                app:cardMaxElevation="12dp"
+                                app:cardPreventCornerOverlap="true"
+                                app:cardUseCompatPadding="false">
+
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <!--
+                                    <ImageView
+                                        android:id="@+id/enemy_deck_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="250dp"
+                                        android:adjustViewBounds="true"
+                                        android:contentDescription="flower"
+                                        app:srcCompat="@drawable/image08"
+                                        android:scaleType="fitXY"/>
+                                    -->
+
+                                    <TextView
+                                        android:id="@+id/enemy_deck_count"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_marginTop="8dp"
+                                        android:text="50"
+                                        android:shadowColor="#000000"
+                                        android:shadowDx="1.5"
+                                        android:shadowDy="1.3"
+                                        android:shadowRadius="2.0"
+                                        android:textAllCaps="true"
+                                        android:textColor="@android:color/white"/>
+
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+                        <!--EnemyDeck-->
+
+                        <!--TurnData-->
+                        <TextView
+                            android:id="@+id/turnDataView"
+                            android:layout_width="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="8"
+                            android:rotation="90"
+                            android:text="Turn:  1"
+                            android:shadowColor="#000000"
+                            android:shadowDx="1.5"
+                            android:shadowDy="1.3"
+                            android:shadowRadius="2.0"
+                            android:textAllCaps="true"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"/>
+                        <!--OwnData-->
+
+                        <!--OwnDeck-->
+                        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/own_deck"
+                            android:layout_width="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="20"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:cardElevation="10dp"
+                                app:cardCornerRadius="10dp"
+                                android:layout_margin="10dp"
+                                app:cardBackgroundColor="@color/purple_500"
+                                app:cardMaxElevation="12dp"
+                                app:cardPreventCornerOverlap="true"
+                                app:cardUseCompatPadding="false">
+
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent">
+
+                                    <!--
+                                    <ImageView
+                                        android:id="@+id/own_deck_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="250dp"
+                                        android:adjustViewBounds="true"
+                                        android:contentDescription="flower"
+                                        app:srcCompat="@drawable/image08"
+                                        android:scaleType="fitXY"/>
+                                    -->
+
+                                    <TextView
+                                        android:id="@+id/own_deck_count"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_marginTop="8dp"
+                                        android:text="50"
+                                        android:shadowColor="#000000"
+                                        android:shadowDx="1.5"
+                                        android:shadowDy="1.3"
+                                        android:shadowRadius="2.0"
+                                        android:textAllCaps="true"
+                                        android:textColor="@android:color/white"/>
+
+                                </RelativeLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+                        <!--OwnDeck-->
+
+                        <!--OwnData-->
+                        <TextView
+                            android:id="@+id/ownDataView"
+                            android:layout_width="match_parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="8"
+                            android:text="Mana:  10\nMoves:  3"
+                            android:shadowColor="#000000"
+                            android:shadowDx="1.5"
+                            android:shadowDy="1.3"
+                            android:shadowRadius="2.0"
+                            android:textAllCaps="false"
+                            android:textAlignment="center"
+                            android:textColor="@android:color/black"/>
+                        <!--OwnData-->
+
+                </LinearLayout>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cardRecyclerViewOwnHand"
@@ -41,7 +256,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_height="0dp"
-            android:layout_weight="20" />
+            android:layout_weight="15" />
 
         <!--
         <FrameLayout

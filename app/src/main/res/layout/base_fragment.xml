@@ -5,7 +5,7 @@
     android:id="@+id/game"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".game.main.BoardFragment">
+    tools:context=".game.main.BaseFragment">
 
     <!--
     <androidx.core.widget.NestedScrollView
@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
     -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/board_recycler_view"
+            android:id="@+id/base_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"

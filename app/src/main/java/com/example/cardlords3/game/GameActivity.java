@@ -3,6 +3,9 @@ package com.example.cardlords3.game;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cardlords3.R;
+import com.example.cardlords3.game.main.BaseFragment;
 import com.example.cardlords3.game.main.BoardFragment;
 
 import org.json.JSONArray;
@@ -25,6 +29,8 @@ public class GameActivity extends AppCompatActivity {
     private JSONArray CardJsonArray = new JSONArray();
     private JSONArray InventoryJsonArray;
 
+    private int enemyDeckCount = 50;
+    private int ownDeckCount = 50;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -33,41 +39,69 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
 
-        Fragment newBoardFragment1 = new BoardFragment();
-        Fragment newBoardFragment2 = new BoardFragment();
-        Fragment newBoardFragment3 = new BoardFragment();
+        Fragment newBaseFragment1 = new BaseFragment();
+        Fragment newBoardFragment = new BoardFragment();
+        Fragment newBaseFragment2 = new BaseFragment();
 
-        /*
         //TopFragment topFragment = new TopFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.p2_hand_fragment_container, newBoardFragment1)
+                .add(R.id.enemy_base_fragment_container, newBaseFragment1)
                 .commit();
-        */
 
         //MiddleFragment middleFragment = new MiddleFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.board_fragment_container, newBoardFragment2)
+                .add(R.id.board_fragment_container, newBoardFragment)
                 .commit();
 
-        /*
         //BottomFragment bottomFragment = new BottomFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.p1_hand_fragment_container, newBoardFragment3)
+                .add(R.id.own_base_fragment_container, newBaseFragment2)
                 .commit();
-        */
 
         loadJson();
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
         //Create Own Hand
         //get user inventory, and link then with each cards detail object
-        int[] handOwnInventory = {3, 2, 2, 1, 4, 1, 1};
+        int[] handOwnInventory = {1, 3, 2, 2, 4, 1, 1};
         loadHand(handOwnInventory, findViewById(R.id.cardRecyclerViewOwnHand));
 
         //Create Enemy Hand
-        int[] handEnemyInventory = {4, 4, 4, 3};
+        int[] handEnemyInventory = {4, 2, 4, 3};
         loadHand(handEnemyInventory, findViewById(R.id.cardRecyclerViewEnemyHand));
 
+
+        // Get a reference to the View
+        View enemyDeckView = findViewById(R.id.enemy_deck);
+        View ownDeckView = findViewById(R.id.own_deck);
+        TextView enemyDeckCountView = findViewById(R.id.enemy_deck_count);
+        TextView ownDeckCountView = findViewById(R.id.own_deck_count);
+
+        loadDeck(enemyDeckCount, enemyDeckView, enemyDeckCountView);
+        loadDeck(ownDeckCount, ownDeckView, ownDeckCountView);
+
+
+        // Set a click listener on enemyDeckView
+        enemyDeckView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadDeck(--enemyDeckCount, enemyDeckView, enemyDeckCountView);
+                Toast.makeText(getApplicationContext(), "Enemy Deck View clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // Set a click listener on ownDeckView
+        ownDeckView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadDeck(--ownDeckCount, ownDeckView, ownDeckCountView);
+                Toast.makeText(getApplicationContext(), "Own Deck View clicked!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadDeck(int deckSize, View deckView, TextView deckTextView) {
+        deckTextView.setText(String.valueOf(deckSize));
+        deckView.invalidate();
     }
 
     private void loadHand(int[] handInventory, RecyclerView handView) {

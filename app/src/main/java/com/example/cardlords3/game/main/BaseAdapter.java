@@ -1,0 +1,68 @@
+package com.example.cardlords3.game.main;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.cardlords3.R;
+
+
+public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.CellViewHolder> {
+    private int[][] baseData;
+
+    public BaseAdapter(int[][] baseData) {
+        this.baseData = baseData;
+    }
+
+    @NonNull
+    @Override
+    public CellViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //View view = LayoutInflater.from(parent.getContext())
+        //        .inflate(R.layout.fragment_cell, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.cardlist_card_base, parent, false);
+
+
+        // Set the height of the view to be divided by 1
+        int height = parent.getHeight();
+        //view.set
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+
+
+        return new CellViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull CellViewHolder holder, int position) {
+        int row = position / baseData.length;
+        int col = position % baseData.length;
+        //TODO Set Cell Data
+        //To rotate 180
+        //holder.itemView.setRotation(180);
+
+        /*
+        Random rand = new Random();
+        String mImagePath = "image_" + (char)(rand.nextInt(18)+97);
+        Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
+        ((ImageView)holder.itemView.findViewById(R.id.image_cell)).setImageURI(uri);
+        */
+        //holder.cellFragment.setCellValue(baseData[row][col]);
+    }
+
+    @Override
+    public int getItemCount() {
+        return baseData.length * baseData[0].length;
+    }
+
+    public static class CellViewHolder extends RecyclerView.ViewHolder {
+        //public CellFragment cellFragment;
+
+        public CellViewHolder(@NonNull View itemView) {
+            super(itemView);
+            //cellFragment = (CellFragment) getChildFragmentManager().findFragmentById(R.id.cell_fragment_container);
+        }
+    }
+}
