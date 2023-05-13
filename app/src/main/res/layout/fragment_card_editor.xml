@@ -63,9 +63,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
-                        android:text="Health" />
+                        android:text="Attack" />
                     <EditText
-                        android:id="@+id/editHealth"
+                        android:id="@+id/editAttack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -77,9 +77,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
-                        android:text="Attack" />
+                        android:text="Health" />
                     <EditText
-                        android:id="@+id/editAttack"
+                        android:id="@+id/editHealth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"

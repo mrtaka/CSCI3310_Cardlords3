@@ -64,7 +64,7 @@
             android:layout_marginRight="4dp"/>
 
         <TextView
-            android:id="@+id/health_textview"
+            android:id="@+id/attack_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10"
@@ -80,7 +80,7 @@
             android:layout_marginLeft="4dp"/>
 
         <TextView
-            android:id="@+id/attack_textview"
+            android:id="@+id/health_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3"
