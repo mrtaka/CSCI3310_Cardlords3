@@ -171,7 +171,7 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.e("Tag", "onCreateViewHolder run");
-        View mItemView = mInflater.inflate(R.layout.cardlist_card, parent, false);
+        View mItemView = mInflater.inflate(R.layout.cardlist_card_hand, parent, false);
         Log.e("Tag", "onCreateViewHolder run");
         return new CardViewHolder(mItemView, this);
     }

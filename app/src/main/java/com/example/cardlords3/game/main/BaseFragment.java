@@ -18,14 +18,22 @@ import com.example.cardlords3.R;
 public class BaseFragment extends Fragment {
 
     private GameViewModel mViewModel;
+    private int baseSide;
 
-    public static BaseFragment newInstance() {
-        return new BaseFragment();
+    public BaseFragment(int side) {
+        //side 1 = enemy
+        //side 0 = own
+        baseSide = side;
+    }
+
+    public static BaseFragment newInstance(int side) {
+        BaseFragment sidedBaseFragment = new BaseFragment(side);
+        return sidedBaseFragment;
     }
 
     private RecyclerView baseRecyclerView;
     private BaseAdapter baseAdapter;
-    private int[][] baseData;
+    private int[] baseData;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +50,8 @@ public class BaseFragment extends Fragment {
 
         baseRecyclerView = view.findViewById(R.id.base_recycler_view);
         baseRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-        baseData = new int[5][1];
-        baseAdapter = new BaseAdapter(baseData);
+        baseData = new int[5];
+        baseAdapter = new BaseAdapter(baseData, baseSide);
         baseRecyclerView.setAdapter(baseAdapter);
 
         // !!!!!!!!!!!!! Start a timer to periodically update the base data

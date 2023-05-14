@@ -5,6 +5,6 @@
         android:color="#000000"
         android:width="1dp" />
 
-    <solid android:color="#00FFFFFF" />
+    <solid android:color="#FFDDAAFF" />
 
 </shape>

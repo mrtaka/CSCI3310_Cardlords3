@@ -1,20 +1,25 @@
 package com.example.cardlords3.game.main;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cardlords3.R;
+import com.example.cardlords3.game.GameActivity;
 
 
 public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.CellViewHolder> {
-    private int[][] baseData;
+    private int[] BaseData;
+    private int BaseSide;
 
-    public BaseAdapter(int[][] baseData) {
-        this.baseData = baseData;
+    public BaseAdapter(int[] baseData, int baseSide) {
+        this.BaseData = baseData;
+        this.BaseSide = baseSide;
     }
 
     @NonNull
@@ -37,24 +42,61 @@ public class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.CellViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CellViewHolder holder, int position) {
-        int row = position / baseData.length;
-        int col = position % baseData.length;
         //TODO Set Cell Data
         //To rotate 180
-        //holder.itemView.setRotation(180);
+        if (BaseSide == 1)
+            holder.itemView.setRotation(180);
 
-        /*
-        Random rand = new Random();
-        String mImagePath = "image_" + (char)(rand.nextInt(18)+97);
-        Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
-        ((ImageView)holder.itemView.findViewById(R.id.image_cell)).setImageURI(uri);
-        */
-        //holder.cellFragment.setCellValue(baseData[row][col]);
+        if (BaseSide == 0) {
+            //Own Side
+            if (GameActivity.ownBase.size() > position) {
+                if (GameActivity.ownBase.get(position) == -1) {
+                    //Dead
+                    ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                            Color.RED);
+                }
+                else {
+                    //Has Card
+                    ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                            Color.rgb(170, 200, 255));
+
+                }
+            }
+            else {
+                ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                        Color.WHITE);
+            }
+        }
+        else {
+            //Enemy Side
+            if (GameActivity.enemyBase.size() > position) {
+                if (GameActivity.enemyBase.get(position) == -1) {
+                    //Dead
+                    ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                            Color.RED);
+                }
+                else {
+                    //Has Card
+                    ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                            Color.rgb(170, 200, 255));
+
+                }
+            }
+            else {
+                ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setBackgroundColor(
+                        Color.WHITE);
+            }
+        }
+
+        if (GameActivity.enemyBase.size() > position) {
+            ((TextView)holder.itemView.findViewById(R.id.cell_color_view)).setContentDescription(
+                    String.valueOf(GameActivity.enemyBase.get(position)));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return baseData.length * baseData[0].length;
+        return BaseData.length;
     }
 
     public static class CellViewHolder extends RecyclerView.ViewHolder {
