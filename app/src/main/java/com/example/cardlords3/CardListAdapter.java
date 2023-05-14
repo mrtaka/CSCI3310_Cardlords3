@@ -236,16 +236,25 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
         }else{
             holder.CardType.setText("");
         }
+
+        if(Integer.parseInt(raceID)==1){
+            holder.CardRace.setText("Race1");
+        }else if(Integer.parseInt(raceID)==2){
+            holder.CardRace.setText("Race2");
+        }else if(Integer.parseInt(raceID)==3){
+            holder.CardRace.setText("Race3");
+        }else{
+            holder.CardRace.setText("");
+        }
+
         if(rarity==-1){
             holder.CardCost.setText("");
             holder.CardHealth.setText("");
             holder.CardAttack.setText("");
-            holder.CardRace.setText("");
         }else{
             holder.CardCost.setText(String.valueOf(cost));
             holder.CardHealth.setText(String.valueOf(health));
             holder.CardAttack.setText(String.valueOf(attack));
-            holder.CardRace.setText(String.valueOf(raceID));
         }
         holder.CardImageItemView.setImageURI(uri);
         holder.CardRarityBar.setRating(rarity);
