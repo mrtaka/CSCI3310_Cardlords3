@@ -52,7 +52,6 @@ public class MenuActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             userType = Math.toIntExact(document.getLong("userType"));
-                            Log.d(TAG, "User type: " + userType);
                             if (userType == 0)
                                 cardEditorButton.setEnabled(true);
                             // Continue processing the user type...

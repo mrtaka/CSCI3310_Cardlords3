@@ -27,7 +27,7 @@ public class CardEditorActivity extends AppCompatActivity {
     //JSONArray CardJsonArray2 = null;
     RecyclerView.LayoutManager layoutManager;
 
-    public interface OnCardListLoadedCallback {
+    private interface OnCardListLoadedCallback {
         void onCardListLoaded(JSONArray CardJsonArray);
     }
 
@@ -68,20 +68,17 @@ public class CardEditorActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     JSONArray CardJsonArray = new JSONArray();
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("test321", document.getId() + " => " + document.getData());
 
                         // Convert the Firestore Document to a JSONObject
                         JSONObject jsonObjectItem = new JSONObject(document.getData());
-                        Log.d("test3212", String.valueOf(jsonObjectItem));
                         // Add the JSONObject to the JSONArray
                         CardJsonArray.put(jsonObjectItem);
                     }
-                    Log.d("test3212", String.valueOf(CardJsonArray));
                     // Now that you have your JSONArray, you can continue with your logic here.
                     // Note: Remember to handle the JSONException that might be thrown when creating a JSONObject.
                     callback.onCardListLoaded(CardJsonArray);
                 } else {
-                    Log.d("test321", "Error getting documents: ", task.getException());
+                    Log.d("TAG", "Error getting documents: ", task.getException());
                 }
             }
         });
