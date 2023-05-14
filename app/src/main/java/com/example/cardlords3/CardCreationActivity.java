@@ -1,5 +1,6 @@
 package com.example.cardlords3;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
@@ -17,7 +18,16 @@ import android.text.Editable;
 import android.widget.Toast;
 import android.widget.AdapterView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CardCreationActivity extends AppCompatActivity {
 
@@ -306,7 +316,41 @@ public class CardCreationActivity extends AppCompatActivity {
     }
 
     public void createCardToDB(View view) {
-        Integer cardID = 0;
-        Toast.makeText(getApplicationContext(), "Successful create card " + card_name + " (ID: " + cardID + ")", Toast.LENGTH_SHORT).show();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("CardDB")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            int maxCardID = Integer.MIN_VALUE;
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                int cardID = document.getLong("cardID").intValue();
+                                if (cardID > maxCardID) {
+                                    maxCardID = cardID;
+                                }
+                            }
+                            Log.d("MaxCardID: ", String.valueOf(maxCardID));
+                            Integer newCardID = maxCardID + 1;
+                            Map<String, Object> card = new HashMap<>();
+                            card.put("cardID", newCardID);
+                            card.put("card_name", card_name);
+                            card.put("typeID", typeID);
+                            card.put("raceID", raceID);
+                            card.put("health", health);
+                            card.put("attack", attack);
+                            card.put("skillID", skillID);
+                            card.put("card_Image", image_name);
+                            card.put("cost", cost);
+                            card.put("rarity", rarity);
+
+                            db.collection("CardDB").document().set(card);
+                            Toast.makeText(getApplicationContext(), "Successful create card " +
+                                    card_name + " (ID: " + newCardID + ")", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("MaxCardID: ", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 }
