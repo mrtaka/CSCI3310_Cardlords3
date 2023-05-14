@@ -31,7 +31,7 @@ public class CardShopActivity extends AppCompatActivity {
 
         //create recyclerview
         mRecyclerView = findViewById(R.id.cardRecyclerView);
-        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 1);
+        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 3);
         // Connect the adapter with the RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
         // Give the RecyclerView a default layout manager.

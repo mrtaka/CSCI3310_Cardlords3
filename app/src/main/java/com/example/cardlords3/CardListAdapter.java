@@ -81,8 +81,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                 public void onClick(View v) {
                     // Get the position of the item that was clicked.
                     int position = getLayoutPosition();
-                    Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
-                    t.show();
+                    //Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
+                    //t.show();
 
                     //Get this card detail info
                     Integer cardID = null;
@@ -121,6 +121,15 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         Intent intent = new Intent(v.getContext(), CardCreationActivity.class); //set the target activity
                         intent.putExtra("position", position);//send position to new activity
                         ((Activity)context).startActivityForResult(intent,1); //launch new activity
+                    }
+                    else if(FragmentType == 3){//=====================add a card to card deck==========================
+                        Toast t2 = Toast.makeText(v.getContext(), "Add card with ID:  " + cardID , Toast.LENGTH_SHORT);
+                        t2.show();
+                        //============ back to card deck activity======================
+                        /*Intent replyIntent = new Intent();
+                        ((Activity)context).setResult(RESULT_OK, replyIntent);
+                        finish();*/
+                        ((Activity)context).onBackPressed();
                     }
                     else {//=====================create fragment==========================
                         FragmentManager fragmentManager = mFragmentManager;
