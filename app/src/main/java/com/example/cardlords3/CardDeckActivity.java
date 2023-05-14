@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +31,7 @@ public class CardDeckActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
+    private TextView CardNumView;
 
     private JSONArray CardJsonArray = new JSONArray();
     private JSONArray InventoryJsonArray = new JSONArray();
@@ -45,7 +47,9 @@ public class CardDeckActivity extends AppCompatActivity {
         setContentView(R.layout.activity_card_deck);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         inventory = new int[0]; // Initialize to empty array, will be filled later
+        CardNumView = this.findViewById(R.id.card_number_text);
         //load each type of cd data from json
         loadJson(new OnCardListLoadedCallback() {
             @Override
@@ -67,6 +71,9 @@ public class CardDeckActivity extends AppCompatActivity {
                                             inventory[i] = inventoryList.get(i).intValue();
                                         }
                                     }
+                                    //set the num of card textview
+                                    CardNumView.setText(String.valueOf(inventory.length));
+
                                     Log.d("Tag1", Arrays.toString(inventory));
                                     inventoryJson(inventory);
                                     Log.e("Tag", "the combined InventoryJsonArray is " + InventoryJsonArray);
