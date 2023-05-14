@@ -7,11 +7,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,10 +36,14 @@ public class CardDeckActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
+    private TextView CardNumView;
 
     private JSONArray CardJsonArray = new JSONArray();
     private JSONArray InventoryJsonArray = new JSONArray();
     private int[] inventory;
+
+    FirebaseUser user;
+    FirebaseFirestore db;
 
     private interface OnCardListLoadedCallback {
         void onCardListLoaded(JSONArray CardJsonArray);
@@ -43,10 +53,61 @@ public class CardDeckActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_deck);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
         inventory = new int[0]; // Initialize to empty array, will be filled later
+        CardNumView = this.findViewById(R.id.card_number_text);
         //load each type of cd data from json
+        /*loadJson(new OnCardListLoadedCallback() {
+            @Override
+            public void onCardListLoaded(JSONArray CardJsonArray) {
+                Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
+
+                //get user inventory, and link then with each cards detail object
+                if (user != null) {
+                    db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    List<Long> inventoryList = (List<Long>) document.get("inventory");
+                                    if (inventoryList != null) {
+                                        inventory = new int[inventoryList.size()];
+                                        for (int i = 0; i < inventoryList.size(); i++) {
+                                            inventory[i] = inventoryList.get(i).intValue();
+                                        }
+                                    }
+
+                                    Log.d("Tag1", Arrays.toString(inventory));
+                                    inventoryJson(inventory);
+                                    Log.e("Tag", "the combined InventoryJsonArray is " + InventoryJsonArray);
+
+                                    //create recyclerview
+                                    mRecyclerView = findViewById(R.id.cardRecyclerView);
+                                    mAdapter = new CardListAdapter(CardDeckActivity.this, InventoryJsonArray, getSupportFragmentManager(), 1);
+                                    // Connect the adapter with the RecyclerView.
+                                    mRecyclerView.setAdapter(mAdapter);
+                                    // Give the RecyclerView a default layout manager.
+                                    mRecyclerView.setLayoutManager(new LinearLayoutManager(CardDeckActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                                }
+                            }
+                        }
+                    });
+
+                }
+
+            }
+        });*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update the UI when the activity is re-displayed
+        InventoryJsonArray = new JSONArray();
+
         loadJson(new OnCardListLoadedCallback() {
             @Override
             public void onCardListLoaded(JSONArray CardJsonArray) {
@@ -67,6 +128,7 @@ public class CardDeckActivity extends AppCompatActivity {
                                             inventory[i] = inventoryList.get(i).intValue();
                                         }
                                     }
+
                                     Log.d("Tag1", Arrays.toString(inventory));
                                     inventoryJson(inventory);
                                     Log.e("Tag", "the combined InventoryJsonArray is " + InventoryJsonArray);
@@ -77,32 +139,14 @@ public class CardDeckActivity extends AppCompatActivity {
                                     // Connect the adapter with the RecyclerView.
                                     mRecyclerView.setAdapter(mAdapter);
                                     // Give the RecyclerView a default layout manager.
-                                    //layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.grid_column_count));
-                                    //mRecyclerView.setLayoutManager(layoutManager);
                                     mRecyclerView.setLayoutManager(new LinearLayoutManager(CardDeckActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                                    //refresh recyclerview
+                                    //mAdapter.notifyDataSetChanged();
                                 }
                             }
                         }
                     });
-/*
-                    db.collection("users").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    List<Long> inventoryList = (List<Long>) document.get("inventory");
-                                    if (inventoryList != null) {
-                                        inventory = new int[inventoryList.size()];
-                                        for (int i = 0; i < inventoryList.size(); i++) {
-                                            inventory[i] = inventoryList.get(i).intValue();
-                                        }
-                                    }
-                                    Log.d("Tag1", Arrays.toString(inventory));
-                                }
-                            }
-                        }
-                    });*/
+
                 }
 
             }
@@ -112,6 +156,7 @@ public class CardDeckActivity extends AppCompatActivity {
     public FragmentManager getMyFragmentManager() {
         return getSupportFragmentManager();
     }
+
     private void loadJson(OnCardListLoadedCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("CardDB").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -192,8 +237,10 @@ public class CardDeckActivity extends AppCompatActivity {
             Log.d("Tag", "Inventory length: " + inventory.length);
             Log.d("Tag", "CardJsonArray length: " + CardJsonArray.length());
 
+
             //now all the card object details to each card of the inventory
-            for(int i=0; i<inventory.length; i++){
+            int inventory_length = inventory.length;
+            for(int i = 0,k=0; k<inventory_length; i++, k++){
 
                 //found the json object with that CardID
                 for(int j=0; j<CardJsonArray.length(); j++){
@@ -204,8 +251,69 @@ public class CardDeckActivity extends AppCompatActivity {
                         //append this card json to inventory json array
                         InventoryJsonArray.put(CardJson);
                         Log.d("Tag", "Match found, added to InventoryJsonArray");
+                        break;
+                    }
+                    else if(j == CardJsonArray.length()-1){
+                        inventory = removeElement(inventory, i);
+                        i--;
                     }
                 }
+            }
+            if(inventory.length != inventory_length){
+                Log.d("InventoryUpdated", Arrays.toString(inventory));
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    String uid = user.getUid();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    // Define the document reference
+                    DocumentReference docRef = db.collection("users").document(uid);
+
+                    // Get the document
+                    int[] finalInventory = inventory;
+                    List<Integer> inventoryList = new ArrayList<>();
+                    for (int item : finalInventory) {
+                        inventoryList.add(item);
+                    }
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Write the entire array back to Firestore
+                                    docRef.update("inventory", inventoryList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                                    //set the num of card textview
+                                                    CardNumView.setText(String.valueOf(inventoryList.size()));
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@androidx.annotation.NonNull Exception e) {
+                                                    Log.w("Firestore", "Error updating document", e);
+                                                }
+                                            });
+                                } else {
+                                    Log.d("Firestore", "No such document");
+                                }
+                            } else {
+                                Log.d("Firestore", "get failed with ", task.getException());
+                            }
+
+                        }
+                    });
+                } else {
+                    // No user is signed in
+                }
+            }
+            else{
+                //set the num of card textview when no need clean
+                CardNumView.setText(String.valueOf(inventory.length));
             }
 
         }catch (Exception e)
@@ -213,5 +321,19 @@ public class CardDeckActivity extends AppCompatActivity {
             Log.e("Tag", "from inventory Json: error "+e);
         }
     }
+    public static int[] removeElement(int[] array, int index) {
+        if (index < 0 || index >= array.length) {
+            // Invalid index, return the original array
+            return array;
+        }
 
+        int[] newArray = new int[array.length - 1];
+        for (int i = 0, j = 0; i < array.length; i++) {
+            if (i != index) {
+                newArray[j++] = array[i];
+            }
+        }
+
+        return newArray;
+    }
 }

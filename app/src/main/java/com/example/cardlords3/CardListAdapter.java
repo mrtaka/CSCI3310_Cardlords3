@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,16 @@ import org.w3c.dom.Text;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
     private Context context;
@@ -81,8 +92,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                 public void onClick(View v) {
                     // Get the position of the item that was clicked.
                     int position = getLayoutPosition();
-                    Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
-                    t.show();
+                    //Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
+                    //t.show();
 
                     //Get this card detail info
                     Integer cardID = null;
@@ -92,7 +103,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     Integer typeID = null;
                     Integer health = null;
                     Integer attack = null;
-                    String raceID = null;
+                    Integer raceID = null;
+                    Integer skillID = null;
                     int rarity = 0;
                     //get all detail info of a card
                     try {
@@ -101,9 +113,10 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         name = CardJsonArray.getJSONObject(position).getString("card_name");
                         cost= CardJsonArray.getJSONObject(position).getInt("cost");
                         typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
+                        skillID= CardJsonArray.getJSONObject(position).getInt("skillID");
                         health = CardJsonArray.getJSONObject(position).getInt("health");
                         attack= CardJsonArray.getJSONObject(position).getInt("attack");
-                        raceID = CardJsonArray.getJSONObject(position).getString("raceID");
+                        raceID = CardJsonArray.getJSONObject(position).getInt("raceID");
                         rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
 
                     } catch (JSONException e) {
@@ -122,12 +135,73 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         intent.putExtra("position", position);//send position to new activity
                         ((Activity)context).startActivityForResult(intent,1); //launch new activity
                     }
+                    else if(FragmentType == 3){//=====================add a card to card deck==========================
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user != null) {
+                            // User is signed in
+                            String uid = user.getUid();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                            // Define the document reference
+                            DocumentReference docRef = db.collection("users").document(uid);
+
+                            // Get the document
+                            Integer finalCardID = cardID;
+                            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            // Get the inventory array
+                                            List<Long> inventory = (List<Long>) document.get("inventory");
+                                            // Add the new value
+                                            inventory.add(Long.valueOf(finalCardID));
+                                            // Write the entire array back to Firestore
+                                            docRef.update("inventory", inventory)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                                            // handle success here - update UI, etc.
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("Firestore", "Error updating document", e);
+                                                            // handle failure here - show error message, etc.
+                                                        }
+                                                    });
+                                        } else {
+                                            Log.d("Firestore", "No such document");
+                                        }
+                                    } else {
+                                        Log.d("Firestore", "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        } else {
+                            // No user is signed in
+                            // Handle this case
+                        }
+
+
+                        Toast t2 = Toast.makeText(v.getContext(), "Add card with ID:  " + cardID , Toast.LENGTH_SHORT);
+                        t2.show();
+                        //============ back to card deck activity======================
+                        /*Intent replyIntent = new Intent();
+                        ((Activity)context).setResult(RESULT_OK, replyIntent);
+                        finish();*/
+                        ((Activity)context).onBackPressed();
+                    }
                     else {//=====================create fragment==========================
                         FragmentManager fragmentManager = mFragmentManager;
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
                         //use bundle to pass data to fragment
                         Bundle mBundle = new Bundle();
+                        mBundle.putInt("cardID", cardID);
                         mBundle.putString("image", mImagePath);
                         mBundle.putString("name", name);
                         mBundle.putInt("cost", cost);
@@ -135,7 +209,9 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         mBundle.putInt("health", health);
                         mBundle.putInt("attack", attack);
                         mBundle.putInt("rarity", rarity);
-                        mBundle.putString("raceID", raceID);
+                        mBundle.putInt("raceID", raceID);
+                        mBundle.putInt("skillID", skillID);
+                        mBundle.putInt("position", position);
 
                         //see which fragment is used
                         if (FragmentType == 1) { //create info fragment

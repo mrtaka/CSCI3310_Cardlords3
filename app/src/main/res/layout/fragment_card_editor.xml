@@ -19,6 +19,44 @@
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="false">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardElevation="10dp"
+                app:cardCornerRadius="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                app:cardBackgroundColor="@color/Grey"
+                app:cardMaxElevation="12dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="false">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center"
+                        android:text="  ID: " />
+                    <TextView
+                        android:id="@+id/card_id_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_marginRight="15dp"
+                        android:layout_gravity="center"
+                        android:text="0" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,8 +126,38 @@
                         android:textColor="@color/Grey"
                         android:textSize="12dp"/>
                 </TableRow>
-
             </TableLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/editCardFromCardListButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/button_bg"
+                    android:drawableLeft="@drawable/remove_30x30"
+                    android:textColor="@color/Grey"
+                    android:textSize="10dp"
+                    android:text="Edit Card" />
+                <Button
+                    android:id="@+id/deleteCardFromCardListButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/button_bg"
+                    android:drawableLeft="@drawable/remove_30x30"
+                    android:textColor="@color/Grey"
+                    android:textSize="10dp"
+                    android:text="Delete Card" />
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </androidx.cardview.widget.CardView>
 
