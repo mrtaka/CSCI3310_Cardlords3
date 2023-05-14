@@ -29,6 +29,10 @@ import java.util.List;
 
 
 public class GameActivity extends AppCompatActivity {
+    public static int handCardSideSelected = -1;
+    public static int handCardSelected = -1;
+    public static int handCardPlaceType = 0;
+    public static int handCardIDSelected = -1;
     private RecyclerView mRecyclerView;
     private CardListAdapterBoard mAdapter;
 
@@ -84,6 +88,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     Cell[][] BoardCells = new Cell[5][5];
+    public static boolean[][] clickable = new boolean[5][5];
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -93,17 +98,23 @@ public class GameActivity extends AppCompatActivity {
 
         //TODO: Create Data
         turn = 1;
-        int[] enemyDeckDummy = new int[] {3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
-        int[] ownDeckDummy = new int[] {1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
+        int[] enemyDeckDummy = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
+        int[] ownDeckDummy = new int[]{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
 
-        for (int i=0; i<5; i++) {
-            for (int j=0; j<5; j++) {
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
                 BoardCells[i][j] = new Cell();
             }
         }
         BoardCells[3][0].cellID = 3;
         BoardCells[0][2].cellID = 4;
         BoardCells[0][2].owner = 1;
+
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                clickable[i][j] = false;
+            }
+        }
         //Log.e("BoardCells[2][3]", String.valueOf(BoardCells[2][3].cellID));
         //Array to List & Vice Versa
         /*
@@ -132,7 +143,7 @@ public class GameActivity extends AppCompatActivity {
 
         //TODO: Board Fragments
         Fragment newEnemyBaseFragment1 = new BaseFragment(1);
-        Fragment newBoardFragment = new BoardFragment(BoardCells);
+        Fragment newBoardFragment = new BoardFragment(BoardCells, this);
         Fragment newOwnBaseFragment2 = new BaseFragment(0);
 
         //TopFragment topFragment = new TopFragment();
@@ -186,7 +197,7 @@ public class GameActivity extends AppCompatActivity {
                         enemyDeckColorView.invalidate();
                     }
                     EnemyDrawDeck(1, enemyHand);
-                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true);
+                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1);
                 }
             }
         });
@@ -202,7 +213,7 @@ public class GameActivity extends AppCompatActivity {
                         ownDeckColorView.invalidate();
                     }
                     OwnDrawDeck(1, ownHand);
-                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true);
+                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0);
                 }
             }
         });
@@ -211,6 +222,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TurnEnd();
+                loadBoard();
             }
         });
 
@@ -221,29 +233,56 @@ public class GameActivity extends AppCompatActivity {
         loadData(ownMaxMana, ownMaxMoves, ownHand.size(), ownGraveCount, ownDataTextView);
 
         //TODO: TURN 1
-            //TODO: Draw 5 to Hand
-                EnemyDrawDeck(5, enemyHand);
-                OwnDrawDeck(5, ownHand);
-                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false);
-                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false);
+        //TODO: Draw 5 to Hand
+        EnemyDrawDeck(5, enemyHand);
+        OwnDrawDeck(5, ownHand);
+        loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1);
+        loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0);
 
-            //TODO: Draw 5 to Base
-                EnemyDrawDeck(5, enemyBase);
-                OwnDrawDeck(5, ownBase);
-                loadBase(ownBase, findViewById(R.id.own_base_fragment_container));
-                loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
+        //TODO: Draw 5 to Base
+        EnemyDrawDeck(5, enemyBase);
+        OwnDrawDeck(5, ownBase);
+        loadBase(ownBase, findViewById(R.id.own_base_fragment_container));
+        loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
 
-            //EndZone and enemy draw
-            EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+        //EndZone and enemy draw
+        EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+        loadBoard();
     }
 
 //TODO: Functions
 
+    //TODO:
+    private void loadBoard() {
+        View boardRecyclerView = findViewById(R.id.board_fragment_container);
+        boardRecyclerView.invalidate();
+
+
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                Log.e("clickable["+String.valueOf(i)+"]["+String.valueOf(j)+"]", String.valueOf(clickable[i][j]));
+            }
+        }
+    }
+
+    //TODO:
+    public static void loadBoardGlobal(GameActivity gameActivity) {
+        View boardRecyclerView = gameActivity.findViewById(R.id.board_fragment_container);
+        boardRecyclerView.invalidate();
+    }
+
+    //TODO: End Turn
     private void TurnEnd() {
         turn++;
         loadTurn(findViewById(R.id.turnDataView));
         Button turnEndButton = findViewById(R.id.turnEndButton);
         turnEndButton.setRotation((turn+1)%2*180);
+
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                clickable[i][j] = false;
+            }
+        }
 
         if (turn%2 == 1) {
             if (ownDeck.size() > 0) {
@@ -299,12 +338,12 @@ public class GameActivity extends AppCompatActivity {
 
             if (base == enemyBase) {
                 enemyHand.add(baseCardID);
-                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true);
+                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1);
                 loadData(enemyMaxMana, enemyMaxMoves, enemyHand.size(), enemyGraveCount, enemyDataTextView);
             }
             else {
                 ownHand.add(baseCardID);
-                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true);
+                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0);
                 loadData(ownMaxMana, ownMaxMoves, ownHand.size(), ownGraveCount, ownDataTextView);
             }
 
@@ -377,7 +416,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //TODO: Hand info
-    private void loadHand(List<Integer> handInventory, RecyclerView handView, boolean scrollToLastPosBool) {
+    private void loadHand(List<Integer> handInventory, RecyclerView handView, boolean scrollToLastPosBool, int side) {
         InventoryJsonArray = new JSONArray();
         int[] handIntArray = new int[handInventory.size()];
         for (int i = 0; i < handInventory.size(); i++) {
@@ -389,7 +428,7 @@ public class GameActivity extends AppCompatActivity {
         //create recyclerview
         mRecyclerView = handView;
         //To create fragment
-        mAdapter = new CardListAdapterBoard(this, InventoryJsonArray); //, getSupportFragmentManager(), 1
+        mAdapter = new CardListAdapterBoard(this, InventoryJsonArray, side, this); //, getSupportFragmentManager(), 1
         // Connect the adapter with the RecyclerView
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

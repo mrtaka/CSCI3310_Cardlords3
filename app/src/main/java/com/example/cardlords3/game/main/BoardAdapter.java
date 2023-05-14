@@ -2,6 +2,7 @@ package com.example.cardlords3.game.main;
 
 import android.graphics.Color;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cardlords3.R;
@@ -20,20 +22,68 @@ import org.json.JSONException;
 
 public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHolder> {
     private final int[][] boardData;
-    private final GameActivity.Cell[][] BoardCells;
+    private static GameActivity.Cell[][] BoardCells;
+    private static GameActivity gameActivityParent;
 
     private JSONArray CardJsonArray = new JSONArray();
 
-    public BoardAdapter(int[][] boardData, GameActivity.Cell[][] cells, JSONArray inventoryJsonArray) {
+    public BoardAdapter(int[][] boardData, GameActivity.Cell[][] cells, JSONArray inventoryJsonArray, GameActivity gameActivity) {
         this.boardData = boardData;
         this.BoardCells = cells;
         this.CardJsonArray = inventoryJsonArray;
+        this.gameActivityParent = gameActivity;
+    }
+
+    public static void PreparePlace(int handCardPlaceType, int side, int position, int intValue) {
+        switch(handCardPlaceType) {
+            case 0:
+                // 0 normal_soldier
+                //TODO: Make all empty back-rank glow and clickable
+                if (side == 0) {    //own
+                    for(int i=0; i<5; i++) {
+                        if (BoardCells[4][i].cellID == -1) {
+                            GameActivity.clickable[4][i] = true;
+                            Log.e("Clickable Pos", String.valueOf(i));
+                        }
+                    }
+                }
+                else {    //enemy
+                    for(int i=0; i<5; i++) {
+                        if (BoardCells[0][i].cellID == -1) {
+                            GameActivity.clickable[0][i] = true;
+                            Log.e("Clickable Pos", String.valueOf(i));
+                        }
+                    }
+                }
+                break;
+            case 1:
+                // 1 magic_self_card
+                break;
+            case 2:
+                // 2 magic_anywhere
+                break;
+            case 3:
+                // 3 magic_enemy_card
+                break;
+            case 4:
+                // 4 magic_all_empty
+                break;
+            case 5:
+                // 5 magic_all_empty_except_last_line
+                break;
+            case 6:
+                // 6 anywhere_soldier_except_last_line
+                break;
+            default:
+                break;
+        }
+
+        GameActivity.loadBoardGlobal(gameActivityParent);
     }
 
     @NonNull
     @Override
     public CellViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         /*
         ImageView CardImageItemView;
         TextView CardName;
@@ -62,6 +112,9 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
 
     @Override
     public void onBindViewHolder(@NonNull CellViewHolder holder, int position) {
+        int col = position % boardData.length;
+        int row = position / boardData.length;
+
         String mImagePath = null;
         String name = null;
         Integer cost = null;
@@ -95,12 +148,24 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         Uri uri;
         if (mImagePath == "") {
             uri = Uri.parse("");
+            if(GameActivity.clickable[row][col]) {
+                ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
+                        Color.argb(255, 230, 255, 230));
+            }
+            else {
+                ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
+                        Color.argb(255, 255, 255, 255));
+            }
         }
         else {
             mImagePath = mImagePath.replaceFirst("[.][^.]+$", "");
             uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
         }
-        
+
+        if(GameActivity.clickable[row][col]) {
+            ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
+                    Color.argb(255, 230, 255, 230));
+        }
         // Set up View items for this row (position), modify to show correct information read from the CSV
         //holder.CardName.setText(name);
         if(typeID==1){
@@ -134,9 +199,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
             ((TextView) (holder.itemView.findViewById(R.id.health_bg))).setBackgroundColor(Color.argb(0, 255, 255, 255));
         }
 
-
-        int col = position % boardData.length;
-        int row = position / boardData.length;
         //TODO Set Cell Data
         //To rotate 180
         if (BoardCells[row][col].owner == 1)

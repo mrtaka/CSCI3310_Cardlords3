@@ -23,13 +23,16 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.example.cardlords3.CardDeckFragment;
 import com.example.cardlords3.CardEditorFragment;
 import com.example.cardlords3.R;
+import com.example.cardlords3.game.main.BoardAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewHolder>  {
+    private final int side;
     private Context context;
     private LayoutInflater mInflater;
+    private GameActivity gameActivity;
 
     private JSONArray CardJsonArray = new JSONArray();
 
@@ -74,9 +77,59 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
                 public void onClick(View v) {
                     // Get the position of the item that was clicked.
                     int position = getLayoutPosition();
-                    Toast t = Toast.makeText(v.getContext(), "Position " + position + " is clicked", Toast.LENGTH_SHORT);
+
+                    Integer cardID = null;
+                    String mImagePath = null;
+                    String name = null;
+                    Integer cost = null;
+                    Integer typeID = null;
+                    Integer health = null;
+                    Integer attack = null;
+                    String raceID = null;
+                    int rarity = 0;
+                    try {
+                        cardID = CardJsonArray.getJSONObject(position).getInt("cardID");
+                        mImagePath = CardJsonArray.getJSONObject(position).getString("card_Image");
+                        name = CardJsonArray.getJSONObject(position).getString("card_name");
+                        cost= CardJsonArray.getJSONObject(position).getInt("cost");
+                        typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
+                        health = CardJsonArray.getJSONObject(position).getInt("health");
+                        attack= CardJsonArray.getJSONObject(position).getInt("attack");
+                        raceID = CardJsonArray.getJSONObject(position).getString("raceID");
+                        rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
+
+                    } catch (JSONException e) {
+                        mImagePath = "image01.png";
+                        rarity = 1;
+                        e.printStackTrace();
+                    }
+                    //check if the rarity has updated or not
+                    //rarity = 3;
+                    //edit the file path
+                    mImagePath = mImagePath.replaceFirst("[.][^.]+$", "");
+                    Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
+
+                    Toast t = Toast.makeText(v.getContext(), "Owner: "+String.valueOf(side)+" | Position " + position + " is clicked", Toast.LENGTH_SHORT);
                     t.show();
 
+                    GameActivity.handCardSideSelected = side;
+                    GameActivity.handCardSelected = position;
+                    GameActivity.handCardIDSelected = cardID.intValue();
+                    if (typeID == 3) {  //Magic
+                        GameActivity.handCardPlaceType = 2;
+                        // 0 normal_soldier
+                        // 1 magic_self_card
+                        // 2 magic_anywhere
+                        // 3 magic_enemy_card
+                        // 4 magic_all_empty
+                        // 5 magic_all_empty_except_last_line
+                        // 6 anywhere_soldier_except_last_line
+                    }
+                    else {  //Soldier
+                        GameActivity.handCardPlaceType = 0;
+                    }
+
+                    BoardAdapter.PreparePlace(GameActivity.handCardPlaceType, side, position, cardID.intValue());
                     //=====================go to fragment==========================
                     /*
                             FragmentManager fragmentManager = mFragmentManager;
@@ -157,10 +210,12 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     }
 
     //================changed here==========================
-    public CardListAdapterBoard(Context context, JSONArray CardJsonArray) { /*, FragmentManager fragmentManager, Integer FragmentType*/
+    public CardListAdapterBoard(Context context, JSONArray CardJsonArray, int side, GameActivity gameActivity) { /*, FragmentManager fragmentManager, Integer FragmentType*/
         mInflater = LayoutInflater.from(context);
         this.CardJsonArray = CardJsonArray;
         this.context = context;
+        this.side = side;
+        this.gameActivity = gameActivity;
         /*
         this.mFragmentManager = fragmentManager;
         this.FragmentType = FragmentType; //1 is Info Fragment, 2 is EditFragment

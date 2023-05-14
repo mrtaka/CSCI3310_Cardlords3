@@ -57,6 +57,7 @@
         </activity>
         <activity
             android:name=".game.GameActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:label="@string/title_activity_game"
             android:theme="@style/Theme.AppCompat.NoActionBar">

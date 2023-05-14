@@ -27,13 +27,15 @@ public class BoardFragment extends Fragment {
 
     private GameViewModel mViewModel;
     private GameActivity.Cell[][] BoardCells;
+    private GameActivity gameActivityParent;
 
-    public BoardFragment(GameActivity.Cell[][] cells) {
+    public BoardFragment(GameActivity.Cell[][] cells, GameActivity gameActivityParent) {
         BoardCells = cells;
+        this.gameActivityParent = gameActivityParent;
     }
 
-    public static BoardFragment newInstance(GameActivity.Cell[][] cells) {
-        BoardFragment celledBoardFragment = new BoardFragment(cells);
+    public static BoardFragment newInstance(GameActivity.Cell[][] cells, GameActivity gameActivityParent) {
+        BoardFragment celledBoardFragment = new BoardFragment(cells, gameActivityParent);
         return celledBoardFragment;
     }
 
@@ -76,7 +78,7 @@ public class BoardFragment extends Fragment {
         boardRecyclerView = view.findViewById(R.id.board_recycler_view);
         boardRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 5));
         boardData = new int[5][5];
-        boardAdapter = new BoardAdapter(boardData, BoardCells, InventoryJsonArray);
+        boardAdapter = new BoardAdapter(boardData, BoardCells, InventoryJsonArray, gameActivityParent);
         boardRecyclerView.setAdapter(boardAdapter);
 
         return view;
@@ -156,29 +158,3 @@ public class BoardFragment extends Fragment {
     }
 
 }
-
-/*
-public class BoardFragment extends Fragment {
-
-    private GameViewModel mViewModel;
-
-    public static BoardFragment newInstance() {
-        return new BoardFragment();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.board_fragment, container, false);
-    }
-
-}
-*/
