@@ -1,6 +1,7 @@
 package com.example.cardlords3;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,7 +9,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 
 /**
@@ -111,7 +124,49 @@ public class CardDeckFragment extends Fragment {
             public void onClick(View v) {
                 //Delete card from deck
                 if(Param_position > 0){
-                    Toast.makeText(getActivity(), "Remove card in position " + Param_position, Toast.LENGTH_SHORT).show();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String uid = user.getUid();
+                    int positionToRemove = Param_position - 1;
+
+                    db.collection("users").document(uid)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            List<Long> inventory = (List<Long>) document.get("inventory");
+                                            if (inventory != null && positionToRemove < inventory.size()) {
+                                                inventory.remove(positionToRemove);
+                                                db.collection("users").document(uid)
+                                                        .update("inventory", inventory)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d("DeleteFromDeck", "DocumentSnapshot successfully updated!");
+                                                                Toast.makeText(getActivity(), "Removed card in position " + Param_position, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w("DeleteFromDeck", "Error updating document", e);
+                                                                Toast.makeText(getActivity(), "Remove error ", Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        });
+                                            }
+                                        } else {
+                                            Log.d("Firestore", "No such document");
+                                        }
+                                    } else {
+                                        Log.d("Firestore", "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+
                 }
             }
         });

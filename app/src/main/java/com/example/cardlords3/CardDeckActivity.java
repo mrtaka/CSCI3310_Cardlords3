@@ -11,9 +11,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -25,6 +28,7 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -202,7 +206,8 @@ public class CardDeckActivity extends AppCompatActivity {
 
 
             //now all the card object details to each card of the inventory
-            for(int i=0; i<inventory.length; i++){
+            int inventory_length = inventory.length;
+            for(int i = 0,k=0; k<inventory_length; i++, k++){
 
                 //found the json object with that CardID
                 for(int j=0; j<CardJsonArray.length(); j++){
@@ -213,7 +218,61 @@ public class CardDeckActivity extends AppCompatActivity {
                         //append this card json to inventory json array
                         InventoryJsonArray.put(CardJson);
                         Log.d("Tag", "Match found, added to InventoryJsonArray");
+                        break;
                     }
+                    else if(j == CardJsonArray.length()-1){
+                        inventory = removeElement(inventory, i);
+                        i--;
+                    }
+                }
+            }
+            if(inventory.length != inventory_length){
+                Log.d("InventoryUpdated", Arrays.toString(inventory));
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    String uid = user.getUid();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    // Define the document reference
+                    DocumentReference docRef = db.collection("users").document(uid);
+
+                    // Get the document
+                    int[] finalInventory = inventory;
+                    List<Integer> inventoryList = new ArrayList<>();
+                    for (int item : finalInventory) {
+                        inventoryList.add(item);
+                    }
+                    docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@androidx.annotation.NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    // Write the entire array back to Firestore
+                                    docRef.update("inventory", inventoryList)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@androidx.annotation.NonNull Exception e) {
+                                                    Log.w("Firestore", "Error updating document", e);
+                                                }
+                                            });
+                                } else {
+                                    Log.d("Firestore", "No such document");
+                                }
+                            } else {
+                                Log.d("Firestore", "get failed with ", task.getException());
+                            }
+                        }
+                    });
+                } else {
+                    // No user is signed in
                 }
             }
 
@@ -222,5 +281,19 @@ public class CardDeckActivity extends AppCompatActivity {
             Log.e("Tag", "from inventory Json: error "+e);
         }
     }
+    public static int[] removeElement(int[] array, int index) {
+        if (index < 0 || index >= array.length) {
+            // Invalid index, return the original array
+            return array;
+        }
 
+        int[] newArray = new int[array.length - 1];
+        for (int i = 0, j = 0; i < array.length; i++) {
+            if (i != index) {
+                newArray[j++] = array[i];
+            }
+        }
+
+        return newArray;
+    }
 }
