@@ -1,7 +1,11 @@
 package com.example.cardlords3;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 /**
@@ -100,7 +112,7 @@ public class CardEditorFragment extends Fragment {
         editCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Edit card from deck
+                //Edit card from cardlist
                 if(Param_cardID > 0){
                     Toast.makeText(getActivity(), "Edit card with cardID" + Param_cardID, Toast.LENGTH_SHORT).show();
                 }
@@ -111,9 +123,44 @@ public class CardEditorFragment extends Fragment {
         deleteCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Delete card from deck
+                //Delete card from cardlist
+
                 if(Param_cardID > 0){
-                    Toast.makeText(getActivity(), "Delete card with cardID" + Param_cardID, Toast.LENGTH_SHORT).show();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                    db.collection("CardDB")
+                            .whereEqualTo("cardID", Param_cardID)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            db.collection("CardDB").document(document.getId())
+                                                    .delete()
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Log.d("DeleteCard", "DocumentSnapshot successfully deleted!");
+                                                            Toast.makeText(getActivity(), "Delete card with cardID " + Param_cardID, Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Log.w("DeleteCard", "Error deleting document", e);
+                                                            Toast.makeText(getActivity(),
+                                                                    "Delete failed",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    } else {
+                                        Log.d("DeleteCard", "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+
                 }
             }
         });
