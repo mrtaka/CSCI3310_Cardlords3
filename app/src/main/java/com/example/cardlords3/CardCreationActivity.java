@@ -3,6 +3,7 @@ package com.example.cardlords3;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -461,5 +462,7 @@ public class CardCreationActivity extends AppCompatActivity {
                     });
 
         }
+        //back to the card editor
+        this.onBackPressed();
     }
 }
