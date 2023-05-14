@@ -151,8 +151,6 @@ public class CardDeckActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     public FragmentManager getMyFragmentManager() {

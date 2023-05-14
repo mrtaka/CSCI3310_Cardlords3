@@ -1,5 +1,7 @@
 package com.example.cardlords3;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -147,6 +150,13 @@ public class CardDeckFragment extends Fragment {
                                                             public void onSuccess(Void aVoid) {
                                                                 Log.d("DeleteFromDeck", "DocumentSnapshot successfully updated!");
                                                                 Toast.makeText(getActivity(), "Removed card in position " + Param_position, Toast.LENGTH_SHORT).show();
+                                                                //return back
+                                                                Intent resultIntent = new Intent();
+                                                                getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                                                                getActivity().finish();
+                                                                /*FragmentManager fragmentManager = getFragmentManager();
+                                                                fragmentManager.popBackStack();*/
+
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
