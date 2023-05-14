@@ -1,5 +1,7 @@
 package com.example.cardlords3;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,6 +36,9 @@ public class CardEditorFragment extends Fragment {
     private int Param_attack;
     private int Param_type;
     private int Param_rarity;
+    private int Param_skill;
+    private int Param_race;
+    private String Param_image;
 
     public CardEditorFragment() {
         // Required empty public constructor
@@ -69,6 +74,9 @@ public class CardEditorFragment extends Fragment {
             Param_attack = getArguments().getInt("attack");
             Param_type = getArguments().getInt("typeID");
             Param_rarity = getArguments().getInt("rarity");
+            Param_skill = getArguments().getInt("skillID");
+            Param_race = getArguments().getInt("raceID");
+            Param_image = getArguments().getString("image");
         }
     }
 
@@ -83,6 +91,9 @@ public class CardEditorFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // TODO:
         //  1. get reference of the views and assign with received value
+        TextView id = view.findViewById(R.id.card_id_text_view);
+        id.setText(Integer.toString(Param_cardID));
+
         EditText name = view.findViewById(R.id.edit_name);
         name.setText(Param_cardName);
 
@@ -100,9 +111,22 @@ public class CardEditorFragment extends Fragment {
         editCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Edit card from deck
+                //go to CardCreationActivity to Edit card
                 if(Param_cardID > 0){
                     Toast.makeText(getActivity(), "Edit card with cardID" + Param_cardID, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(v.getContext(), CardCreationActivity.class); //set the target activity
+                    intent.putExtra("editCard", true);//send position to new activity
+                    intent.putExtra("cardID", Param_cardID);//send position to new activity
+                    intent.putExtra("name", Param_cardName);//send position to new activity
+                    intent.putExtra("cost", Param_cost);//send position to new activity
+                    intent.putExtra("health", Param_health);//send position to new activity
+                    intent.putExtra("attack", Param_attack);//send position to new activity
+                    intent.putExtra("typeID", Param_type);//send position to new activity
+                    intent.putExtra("rarity", Param_rarity);//send position to new activity
+                    intent.putExtra("skillID", Param_skill);//send position to new activity
+                    intent.putExtra("raceID", Param_race);//send position to new activity
+                    intent.putExtra("card_Image", Param_image);//send position to new activity
+                    startActivity(intent); //launch new activity
                 }
             }
         });

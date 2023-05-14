@@ -103,7 +103,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                     Integer typeID = null;
                     Integer health = null;
                     Integer attack = null;
-                    String raceID = null;
+                    Integer raceID = null;
+                    Integer skillID = null;
                     int rarity = 0;
                     //get all detail info of a card
                     try {
@@ -112,9 +113,10 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         name = CardJsonArray.getJSONObject(position).getString("card_name");
                         cost= CardJsonArray.getJSONObject(position).getInt("cost");
                         typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
+                        skillID= CardJsonArray.getJSONObject(position).getInt("skillID");
                         health = CardJsonArray.getJSONObject(position).getInt("health");
                         attack= CardJsonArray.getJSONObject(position).getInt("attack");
-                        raceID = CardJsonArray.getJSONObject(position).getString("raceID");
+                        raceID = CardJsonArray.getJSONObject(position).getInt("raceID");
                         rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
 
                     } catch (JSONException e) {
@@ -207,7 +209,8 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         mBundle.putInt("health", health);
                         mBundle.putInt("attack", attack);
                         mBundle.putInt("rarity", rarity);
-                        mBundle.putString("raceID", raceID);
+                        mBundle.putInt("raceID", raceID);
+                        mBundle.putInt("skillID", skillID);
                         mBundle.putInt("position", position);
 
                         //see which fragment is used

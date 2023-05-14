@@ -200,6 +200,7 @@ public class CardDeckActivity extends AppCompatActivity {
             Log.d("Tag", "Inventory length: " + inventory.length);
             Log.d("Tag", "CardJsonArray length: " + CardJsonArray.length());
 
+
             //now all the card object details to each card of the inventory
             for(int i=0; i<inventory.length; i++){
 

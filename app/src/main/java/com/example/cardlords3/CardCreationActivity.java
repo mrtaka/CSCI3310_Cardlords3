@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -24,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -33,8 +35,9 @@ public class CardCreationActivity extends AppCompatActivity {
 
     JSONObject itemJson;
     Integer position;
+    Integer cardID = 0;
     String card_name = "Soldier1";
-    String image_name = "image07.jpg";
+    String image_name = "image01.jpg";
     Integer cost = 5;
     Integer attack = 3;
     Integer health = 10;
@@ -42,6 +45,9 @@ public class CardCreationActivity extends AppCompatActivity {
     Integer typeID = 1;
     Integer skillID = 1;
     Integer raceID = 1;
+
+    //default is create card, but true will become edit card
+    boolean editCard = false;
 
     private EditText CardNameEditText;
     private EditText CostEditText;
@@ -63,10 +69,20 @@ public class CardCreationActivity extends AppCompatActivity {
     TextView CardRace;
     RatingBar CardRarityBar;
 
+    Button FinishButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_creation);
+
+        getIncomeIntent();
+
+        //edit the button (create/edit)
+        FinishButton = this.findViewById(R.id.finish_button);
+        if(editCard==true){
+            FinishButton.setText("Edit this Card");
+        }
 
         //get all field from card
         CardImageItemView = this.findViewById(R.id.card_image);
@@ -77,6 +93,7 @@ public class CardCreationActivity extends AppCompatActivity {
         CardAttack = this.findViewById(R.id.attack_textview);
         CardType = this.findViewById(R.id.type_textview);
         CardRace = this.findViewById(R.id.race_textview);
+
 
         //get all field from editor
         CardNameEditText = findViewById(R.id.edit_name);
@@ -101,7 +118,7 @@ public class CardCreationActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 changeCost(CostEditText.getText().toString());
-            }});
+        }});
 
         AttackEditText = findViewById(R.id.editAttack);
         changeAttack(attack.toString());
@@ -149,6 +166,37 @@ public class CardCreationActivity extends AppCompatActivity {
         });
         changeImage(image_name);
 
+        //set default value of EditText and image
+        CardNameEditText.setText(card_name);
+        CostEditText.setText(String.valueOf(cost));
+        AttackEditText.setText(String.valueOf(attack));
+        HealthEditText.setText(String.valueOf(health));
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.selection_images));
+        image_selection.setAdapter(adapter);
+        image_selection.setSelection(adapter.getPosition(image_name));
+    }
+
+    private void getIncomeIntent(){
+        if(getIntent().hasExtra("editCard")){
+            editCard = getIntent().getBooleanExtra("editCard", true);
+            cardID = getIntent().getIntExtra("cardID", 1);
+            card_name = getIntent().getStringExtra("name");
+            //image_name = "image07.jpg";
+            Log.d("tag", "The input image is : "+image_name);
+            image_name = getIntent().getStringExtra("card_Image");
+            Log.d("tag", "The input image is : "+image_name);
+            cost = getIntent().getIntExtra("cost", 1);
+            attack = getIntent().getIntExtra("attack", 1);
+            health = getIntent().getIntExtra("health", 1);
+            rarity = getIntent().getIntExtra("rarity", 1);
+            typeID = getIntent().getIntExtra("typeID", 1);
+            skillID = getIntent().getIntExtra("skillID", 1);
+            raceID = getIntent().getIntExtra("raceID", 1);
+        }
+        else{
+            Log.e("TAG", "No Intent passes! ");
+        }
     }
 
     public void changeCardName(String input){
@@ -185,6 +233,7 @@ public class CardCreationActivity extends AppCompatActivity {
     public void changeImage(String mImagePath){
         image_name = mImagePath;
         if(mImagePath.length() != 0) {
+            Log.e("TAG", "set the image : "+ mImagePath);
             mImagePath = mImagePath.replaceFirst("[.][^.]+$", "");
             Uri uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
             CardImageItemView.setImageURI(uri);
@@ -316,41 +365,53 @@ public class CardCreationActivity extends AppCompatActivity {
     }
 
     public void createCardToDB(View view) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("CardDB")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            int maxCardID = Integer.MIN_VALUE;
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                int cardID = document.getLong("cardID").intValue();
-                                if (cardID > maxCardID) {
-                                    maxCardID = cardID;
-                                }
-                            }
-                            Log.d("MaxCardID: ", String.valueOf(maxCardID));
-                            Integer newCardID = maxCardID + 1;
-                            Map<String, Object> card = new HashMap<>();
-                            card.put("cardID", newCardID);
-                            card.put("card_name", card_name);
-                            card.put("typeID", typeID);
-                            card.put("raceID", raceID);
-                            card.put("health", health);
-                            card.put("attack", attack);
-                            card.put("skillID", skillID);
-                            card.put("card_Image", image_name);
-                            card.put("cost", cost);
-                            card.put("rarity", rarity);
 
-                            db.collection("CardDB").document().set(card);
-                            Toast.makeText(getApplicationContext(), "Successful create card " +
-                                    card_name + " (ID: " + newCardID + ")", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("MaxCardID: ", "Error getting documents: ", task.getException());
+        if(editCard==true){//edit the info of this card to DB
+            Toast t = Toast.makeText(this, "Successful edit card (ID:" +cardID+")", Toast.LENGTH_SHORT);
+            t.show();
+            //do here to edit card to DB
+
+        }else{//add this card to DB
+            Toast t = Toast.makeText(this, "Successful create card", Toast.LENGTH_SHORT);
+            t.show();
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("CardDB")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                int maxCardID = Integer.MIN_VALUE;
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    int cardID = document.getLong("cardID").intValue();
+                                    if (cardID > maxCardID) {
+                                        maxCardID = cardID;
+                                    }
+                                }
+                                Log.d("MaxCardID: ", String.valueOf(maxCardID));
+                                Integer newCardID = maxCardID + 1;
+                                Map<String, Object> card = new HashMap<>();
+                                card.put("cardID", newCardID);
+                                card.put("card_name", card_name);
+                                card.put("typeID", typeID);
+                                card.put("raceID", raceID);
+                                card.put("health", health);
+                                card.put("attack", attack);
+                                card.put("skillID", skillID);
+                                card.put("card_Image", image_name);
+                                card.put("cost", cost);
+                                card.put("rarity", rarity);
+
+                                db.collection("CardDB").document().set(card);
+                                Toast.makeText(getApplicationContext(), "Successful create card " +
+                                        card_name + " (ID: " + newCardID + ")", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d("MaxCardID: ", "Error getting documents: ", task.getException());
+                            }
                         }
-                    }
-                });
+                    });
+
+        }
     }
 }
