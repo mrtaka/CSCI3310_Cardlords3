@@ -76,8 +76,6 @@ public class CardDeckActivity extends AppCompatActivity {
                                             inventory[i] = inventoryList.get(i).intValue();
                                         }
                                     }
-                                    //set the num of card textview
-                                    CardNumView.setText(String.valueOf(inventory.length));
 
                                     Log.d("Tag1", Arrays.toString(inventory));
                                     inventoryJson(inventory);
@@ -255,6 +253,8 @@ public class CardDeckActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Log.d("Firestore", "DocumentSnapshot successfully updated!");
+                                                    //set the num of card textview
+                                                    CardNumView.setText(String.valueOf(inventoryList.size()));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -269,11 +269,16 @@ public class CardDeckActivity extends AppCompatActivity {
                             } else {
                                 Log.d("Firestore", "get failed with ", task.getException());
                             }
+
                         }
                     });
                 } else {
                     // No user is signed in
                 }
+            }
+            else{
+                //set the num of card textview when no need clean
+                CardNumView.setText(String.valueOf(inventory.length));
             }
 
         }catch (Exception e)
