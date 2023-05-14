@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="selection_images">
+        <item>image01.jpg</item>
+        <item>image02.jpg</item>
+        <item>image03.jpg</item>
+        <item>image04.jpg</item>
+        <item>image05.jpg</item>
+        <item>image06.jpg</item>
+        <item>image07.jpg</item>
+        <item>image08.jpg</item>
+    </array>
+</resources>

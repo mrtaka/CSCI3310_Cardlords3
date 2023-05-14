@@ -35,6 +35,7 @@ public class CardEditorActivity extends AppCompatActivity {
 
         //load default data from json
         loadJson();
+
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
         //load a default creation card

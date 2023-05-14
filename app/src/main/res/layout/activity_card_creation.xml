@@ -6,4 +6,250 @@
     android:layout_height="match_parent"
     tools:context=".CardCreationActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/cardlist_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardMaxElevation="12dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="false">
+
+            <LinearLayout android:orientation="vertical"
+                android:layout_height="fill_parent"
+                android:layout_width="fill_parent">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
+                        android:text="CardName" />
+                    <EditText
+                        android:id="@+id/edit_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:ems="8"
+                        android:inputType="textPersonName"
+                        android:textColor="@color/Grey"
+                        android:text="soldier1"
+                        android:textSize="12dp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
+                        android:text="Cost" />
+                    <EditText
+                        android:id="@+id/editCost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"
+                        android:text="5"/>
+                </TableRow>
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
+                        android:text="Attack" />
+                    <EditText
+                        android:id="@+id/editAttack"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:inputType="number"
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"
+                        android:text="3"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Grey"
+                        android:text="Health" />
+                    <EditText
+                        android:id="@+id/editHealth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:inputType="number"
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"
+                        android:text="10"/>
+                </TableRow>
+            </TableLayout>
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:rowCount="2"
+                    android:columnCount="2">
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_height="fill_parent"
+                        android:layout_width="wrap_content"
+                        android:gravity="center">
+                        <Button
+                            android:id="@+id/buttonMinusRarity"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="-"
+                            android:onClick="minusRarity" />
+                        <TextView
+                            android:id="@+id/textRarity"
+                            android:layout_width="84dp"
+                            android:layout_height="36dp"
+                            android:gravity="center"
+                            android:text="3Stars"
+                            android:textColor="@color/Grey"/>
+                        <Button
+                            android:id="@+id/buttonPlusRarity"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="+"
+                            android:onClick="plusRarity"/>
+                    </LinearLayout>
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_height="fill_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="48dp"
+                        android:gravity="center">
+                        <Button
+                            android:id="@+id/buttonMinusType"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="-"
+                            android:onClick="minusType" />
+                        <TextView
+                            android:id="@+id/textType"
+                            android:layout_width="84dp"
+                            android:layout_height="36dp"
+                            android:gravity="center"
+                            android:text="士兵"
+                            android:textColor="@color/Grey"/>
+                        <Button
+                            android:id="@+id/buttonPlusType"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="+"
+                            android:onClick="plusType"/>
+                    </LinearLayout>
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_height="fill_parent"
+                        android:layout_width="wrap_content"
+                        android:gravity="center">
+                        <Button
+                            android:id="@+id/buttonMinusSkill"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="-"
+                            android:onClick="minusSkill" />
+                        <TextView
+                            android:id="@+id/textSkill"
+                            android:layout_width="84dp"
+                            android:layout_height="36dp"
+                            android:gravity="center"
+                            android:text="Skill1"
+                            android:textColor="@color/Grey"/>
+                        <Button
+                            android:id="@+id/buttonPlusSkill"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="+"
+                            android:onClick="plusSkill"/>
+                    </LinearLayout>
+                    <LinearLayout android:orientation="horizontal"
+                        android:layout_height="fill_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="48dp"
+                        android:gravity="center">
+                        <Button
+                            android:id="@+id/buttonMinusRace"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="-"
+                            android:onClick="minusRace" />
+                        <TextView
+                            android:id="@+id/textRace"
+                            android:layout_width="84dp"
+                            android:layout_height="36dp"
+                            android:gravity="center"
+                            android:text="Race1"
+                            android:textColor="@color/Grey"/>
+                        <Button
+                            android:id="@+id/buttonPlusRace"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:background="@drawable/rounded_button"
+                            android:text="+"
+                            android:onClick="plusRace"/>
+                    </LinearLayout>
+
+                    <Spinner
+                        android:id="@+id/selection_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@drawable/spinner_bg"
+                        android:entries="@array/selection_images" />
+
+                    <Button
+                        android:id="@+id/remove_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/button_bg"
+                        android:drawableLeft="@drawable/remove_30x30"
+                        android:textColor="@color/Grey"
+                        android:textSize="12dp"
+                        android:text="Create This Card "
+                        android:onClick="createCardToDB"/>
+
+                </GridLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
