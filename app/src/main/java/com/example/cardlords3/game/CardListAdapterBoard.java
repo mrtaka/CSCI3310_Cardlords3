@@ -36,6 +36,8 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
 
     private JSONArray CardJsonArray = new JSONArray();
 
+    //private Integer[] passData = {1, 2, 3, 4, 5};
+
     //Fragment related
     CardEditorFragment EditFragment;
     CardDeckFragment InfoFragment;
@@ -43,6 +45,19 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     boolean FragmentExist = false;
     Integer FragmentType = 1;
     private FragmentManager mFragmentManager;
+
+
+    //=====================test==========================
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, int side, int num);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+    //=====================test==========================
 
     class CardViewHolder extends RecyclerView.ViewHolder {
 
@@ -75,6 +90,12 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
             CardImageItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //=====================test========================
+                    if (mListener != null) {
+                        mListener.onItemClick(getAdapterPosition(),side,1);
+                    }
+                    //=================================================
+
                     // Get the position of the item that was clicked.
                     int position = getLayoutPosition();
 
@@ -130,79 +151,6 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
                     }
 
                     BoardAdapter.PreparePlace(GameActivity.handCardPlaceType, side, position, cardID.intValue());
-                    //=====================go to fragment==========================
-                    /*
-                            FragmentManager fragmentManager = mFragmentManager;
-                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                            String mImagePath = null;
-                            String name = null;
-                            Integer cost = null;
-                            Integer typeID = null;
-                            Integer health = null;
-                            Integer attack = null;
-                            String raceID = null;
-                            int rarity = 0;
-                            //get all detail info of a card
-                            try {
-                                mImagePath = CardJsonArray.getJSONObject(position).getString("card_Image");
-                                name = CardJsonArray.getJSONObject(position).getString("card_name");
-                                cost= CardJsonArray.getJSONObject(position).getInt("cost");
-                                typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
-                                health = CardJsonArray.getJSONObject(position).getInt("health");
-                                attack= CardJsonArray.getJSONObject(position).getInt("attack");
-                                raceID = CardJsonArray.getJSONObject(position).getString("raceID");
-                                rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
-
-                            } catch (JSONException e) {
-                                mImagePath = "image01.png";
-                                rarity = 1;
-                                e.printStackTrace();
-                            }
-
-                            //use bundle to pass data to fragment
-                            Bundle mBundle = new Bundle();
-                            mBundle.putString("image", mImagePath);
-                            mBundle.putString("name", name);
-                            mBundle.putInt("cost", cost);
-                            mBundle.putInt("typeID", typeID);
-                            mBundle.putInt("health", health);
-                            mBundle.putInt("attack", attack);
-                            mBundle.putInt("rarity", rarity);
-                            mBundle.putString("raceID", raceID);
-
-                            //see which fragment is used
-                            if(FragmentType == 1){
-                                InfoFragment = new CardDeckFragment();
-                                InfoFragment.setArguments(mBundle);
-                                //see if fragment exist or not
-                                if(FragmentExist == false){
-                                    fragmentTransaction.add(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
-                                }else{
-                                    fragmentTransaction.replace(R.id.fragment_container, (Fragment) InfoFragment, "InfoCard");
-                                }
-                            }else{
-                                EditFragment = new CardEditorFragment();
-                                EditFragment.setArguments(mBundle);
-                                //see if fragment exist or not
-                                if(FragmentExist == false){
-                                    fragmentTransaction.add(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
-                                }else{
-                                    fragmentTransaction.replace(R.id.fragment_container, (Fragment) EditFragment, "EditCard");
-                                }
-                            }
-
-                            //add new fragment to backstack
-                            if(FragmentExist == false){
-                                FragmentExist = true;
-                                fragmentTransaction.addToBackStack(null);
-                            }else{
-                                fragmentManager.popBackStack();
-                                fragmentTransaction.addToBackStack(null);
-                            }
-                            fragmentTransaction.commit();
-                    */
-                    //===========================================================
                 }
             });
             // End of ViewHolder initialization
@@ -216,10 +164,6 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
         this.context = context;
         this.side = side;
         this.gameActivity = gameActivity;
-        /*
-        this.mFragmentManager = fragmentManager;
-        this.FragmentType = FragmentType; //1 is Info Fragment, 2 is EditFragment
-        */
     }
 
     @NonNull

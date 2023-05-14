@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cardlords3.CardListAdapter;
 import com.example.cardlords3.R;
 import com.example.cardlords3.game.main.BaseFragment;
 import com.example.cardlords3.game.main.BoardFragment;
@@ -28,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements CardListAdapterBoard.OnItemClickListener{
     public static int handCardSideSelected = -1;
     public static int handCardSelected = -1;
     public static int handCardPlaceType = 0;
@@ -430,6 +432,9 @@ public class GameActivity extends AppCompatActivity {
         //To create fragment
         mAdapter = new CardListAdapterBoard(this, InventoryJsonArray, side, this); //, getSupportFragmentManager(), 1
         // Connect the adapter with the RecyclerView
+
+        mAdapter.setOnItemClickListener(this);
+        //mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
@@ -443,6 +448,15 @@ public class GameActivity extends AppCompatActivity {
         loadData(enemyManaCount, enemyMovesCount, enemyHand.size(), enemyGraveCount, enemyDataTextView);
         loadData(ownManaCount, ownMovesCount, ownHand.size(), ownGraveCount, ownDataTextView);
     }
+
+    //=================test===================
+    @Override
+    public void onItemClick(int position, int side, int num) {
+        // Do something with the data
+        Toast t = Toast.makeText(this, "Recycle view return Position: " + position + "Side is: " + side, Toast.LENGTH_SHORT);
+        t.show();
+    }
+    //=================test===================
 
     //TODO: Base info
     private void loadBase(List<Integer> Base, View baseView) {
