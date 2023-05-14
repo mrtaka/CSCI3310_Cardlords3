@@ -1,7 +1,6 @@
 package com.example.cardlords3;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,23 +8,28 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
-
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 public class CardEditorActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
-
-    private JSONArray CardJsonArray = new JSONArray();
+    //JSONArray CardJsonArray2 = null;
     RecyclerView.LayoutManager layoutManager;
+
+    public interface OnCardListLoadedCallback {
+        void onCardListLoaded(JSONArray CardJsonArray);
+    }
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -34,25 +38,57 @@ public class CardEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_card_editor);
 
         //load default data from json
-        loadJson();
+        loadJson(new OnCardListLoadedCallback() {
+            @Override
+            public void onCardListLoaded(JSONArray CardJsonArray) {
+                Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
-        Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
+                //load a default creation card
+                addCreateCard(CardJsonArray);
+                Log.e("Tag", "the added creation card CardJsonArray is " + CardJsonArray);
 
-        //load a default creation card
-        addCreateCard();
-        Log.e("Tag", "the added creation card CardJsonArray is " + CardJsonArray);
+                //create recyclerview
+                mRecyclerView = findViewById(R.id.cardRecyclerView);
+                mAdapter = new CardListAdapter(CardEditorActivity.this, CardJsonArray, getSupportFragmentManager(), 2);
+                // Connect the adapter with the RecyclerView.
+                mRecyclerView.setAdapter(mAdapter);
+                // Give the RecyclerView a default layout manager.
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(CardEditorActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            }
+        });
 
-        //create recyclerview
-        mRecyclerView = findViewById(R.id.cardRecyclerView);
-        mAdapter = new CardListAdapter(this, CardJsonArray, getSupportFragmentManager(), 2);
-        // Connect the adapter with the RecyclerView.
-        mRecyclerView.setAdapter(mAdapter);
-        // Give the RecyclerView a default layout manager.
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
     }
+    private void loadJson(OnCardListLoadedCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("CardDB").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-    private void loadJson(){
+                if (task.isSuccessful()) {
+                    JSONArray CardJsonArray = new JSONArray();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("test321", document.getId() + " => " + document.getData());
+
+                        // Convert the Firestore Document to a JSONObject
+                        JSONObject jsonObjectItem = new JSONObject(document.getData());
+                        Log.d("test3212", String.valueOf(jsonObjectItem));
+                        // Add the JSONObject to the JSONArray
+                        CardJsonArray.put(jsonObjectItem);
+                    }
+                    Log.d("test3212", String.valueOf(CardJsonArray));
+                    // Now that you have your JSONArray, you can continue with your logic here.
+                    // Note: Remember to handle the JSONException that might be thrown when creating a JSONObject.
+                    callback.onCardListLoaded(CardJsonArray);
+                } else {
+                    Log.d("test321", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    /* parse from local json file
+    private void loadJson2(){
         try{
             //load json
             InputStream inputStream = getResources().openRawResource(R.raw.cardlist);
@@ -66,15 +102,16 @@ public class CardEditorActivity extends AppCompatActivity {
             int max;
 
             json = new String(buffer, StandardCharsets.UTF_8);
+            Log.e("STRINGJSON", json);
             JSONObject jsonObject = new JSONObject(json);
             //Log.e("Tag", "the json is " + jsonObject);
-            CardJsonArray = new JSONArray(jsonObject.getString("Cards"));
+            CardJsonArray2 = new JSONArray(jsonObject.getString("Cards"));
             //Log.e("Tag", "the jsonArray is " + CardJsonArray);
-            max = CardJsonArray.length();
+            max = CardJsonArray2.length();
 
             //now fetch each json items
             for(int i=0; i<max; i++){
-                JSONObject jsonObjectItem = CardJsonArray.getJSONObject(i);
+                JSONObject jsonObjectItem = CardJsonArray2.getJSONObject(i);
                 //Log.e("Tag", "loadJson: file: " +filename + " rarity: " + rarity);
             }
 
@@ -83,8 +120,8 @@ public class CardEditorActivity extends AppCompatActivity {
             Log.e("Tag", "loadJson: error "+e);
         }
     }
-
-    private void addCreateCard(){
+    */
+    private void addCreateCard(JSONArray CardJsonArray){
         //first add a default add_card on position 0
         try {
             JSONObject addCardJsonObject = new JSONObject();
