@@ -57,8 +57,8 @@ public class CardEditorActivity extends AppCompatActivity {
             }
         });
 
-
     }
+
     private void loadJson(OnCardListLoadedCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("CardDB").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
