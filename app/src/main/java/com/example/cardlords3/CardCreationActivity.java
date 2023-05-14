@@ -20,10 +20,13 @@ import android.widget.Toast;
 import android.widget.AdapterView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -367,7 +370,52 @@ public class CardCreationActivity extends AppCompatActivity {
     public void createCardToDB(View view) {
 
         if(editCard==true){//edit the info of this card to DB
-            Toast t = Toast.makeText(this, "Successful edit card (ID:" +cardID+")", Toast.LENGTH_SHORT);
+            //Log.e("EditCard", cardID +", " + card_name +", " + typeID +", " + raceID +", " +
+                   // + attack +", " + skillID +", " + image_name +", " + cost +", " + rarity);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("CardDB")
+                    .whereEqualTo("cardID", cardID)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    // Once we've found the document, update it with the new data
+                                    Map<String, Object> card = new HashMap<>();
+                                    card.put("cardID", cardID);
+                                    card.put("card_name", card_name);
+                                    card.put("typeID", typeID);
+                                    card.put("raceID", raceID);
+                                    card.put("health", health);
+                                    card.put("attack", attack);
+                                    card.put("skillID", skillID);
+                                    card.put("card_Image", image_name);
+                                    card.put("cost", cost);
+                                    card.put("rarity", rarity);
+                                    db.collection("CardDB").document(document.getId())
+                                            .set(card, SetOptions.merge())
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("EditCard", "DocumentSnapshot successfully updated!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("EditCard", "Error updating document", e);
+                                                }
+                                            });
+                                }
+                            } else {
+                                Log.d("EditCard", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+
+            Toast t = Toast.makeText(this, "Successful edit card (ID:" +cardID+ ")", Toast.LENGTH_SHORT);
             t.show();
             //do here to edit card to DB
 
