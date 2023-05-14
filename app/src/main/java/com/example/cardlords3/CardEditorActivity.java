@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 public class CardEditorActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private CardListAdapter mAdapter;
-    JSONArray CardJsonArray2 = null;
+    //JSONArray CardJsonArray2 = null;
     RecyclerView.LayoutManager layoutManager;
 
     public interface OnCardListLoadedCallback {
@@ -37,10 +37,6 @@ public class CardEditorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_editor);
 
-        loadJson2();
-        Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray2);
-        addCreateCard(CardJsonArray2);
-        Log.e("Tag", "the added creation card CardJsonArray is " + CardJsonArray2);
         //load default data from json
         loadJson(new OnCardListLoadedCallback() {
             @Override
@@ -91,7 +87,7 @@ public class CardEditorActivity extends AppCompatActivity {
         });
     }
 
-
+    /* parse from local json file
     private void loadJson2(){
         try{
             //load json
@@ -124,7 +120,7 @@ public class CardEditorActivity extends AppCompatActivity {
             Log.e("Tag", "loadJson: error "+e);
         }
     }
-
+    */
     private void addCreateCard(JSONArray CardJsonArray){
         //first add a default add_card on position 0
         try {
