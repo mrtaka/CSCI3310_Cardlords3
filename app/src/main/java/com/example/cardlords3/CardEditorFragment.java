@@ -5,8 +5,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -26,6 +28,7 @@ public class CardEditorFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String Param_cardName;
+    private int Param_cardID;
     private int Param_cost;
     private int Param_health;
     private int Param_attack;
@@ -59,6 +62,7 @@ public class CardEditorFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            Param_cardID = getArguments().getInt("cardID");
             Param_cardName = getArguments().getString("name");
             Param_cost = getArguments().getInt("cost");
             Param_health = getArguments().getInt("health");
@@ -91,6 +95,28 @@ public class CardEditorFragment extends Fragment {
 
         EditText attack = view.findViewById(R.id.editAttack);
         attack.setText(String.valueOf(Param_attack));
+
+        Button editCardButton = view.findViewById(R.id.editCardFromCardListButton);
+        editCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Edit card from deck
+                if(Param_cardID > 0){
+                    Toast.makeText(getActivity(), "Edit card with cardID" + Param_cardID, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        Button deleteCardButton = view.findViewById(R.id.deleteCardFromCardListButton);
+        deleteCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Delete card from deck
+                if(Param_cardID > 0){
+                    Toast.makeText(getActivity(), "Delete card with cardID" + Param_cardID, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 }

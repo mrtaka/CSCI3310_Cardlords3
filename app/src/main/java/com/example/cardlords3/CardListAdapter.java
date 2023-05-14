@@ -137,6 +137,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
 
                         //use bundle to pass data to fragment
                         Bundle mBundle = new Bundle();
+                        mBundle.putInt("cardID", cardID);
                         mBundle.putString("image", mImagePath);
                         mBundle.putString("name", name);
                         mBundle.putInt("cost", cost);
@@ -145,6 +146,7 @@ public class CardListAdapter extends Adapter<CardListAdapter.CardViewHolder>  {
                         mBundle.putInt("attack", attack);
                         mBundle.putInt("rarity", rarity);
                         mBundle.putString("raceID", raceID);
+                        mBundle.putInt("position", position);
 
                         //see which fragment is used
                         if (FragmentType == 1) { //create info fragment

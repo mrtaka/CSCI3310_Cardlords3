@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -31,6 +33,7 @@ public class CardDeckFragment extends Fragment {
     private int Param_attack;
     private int Param_type;
     private int Param_rarity;
+    private int Param_position;
 
     public CardDeckFragment() {
         // Required empty public constructor
@@ -65,6 +68,7 @@ public class CardDeckFragment extends Fragment {
             Param_attack = getArguments().getInt("attack");
             Param_type = getArguments().getInt("typeID");
             Param_rarity = getArguments().getInt("rarity");
+            Param_position = getArguments().getInt("position");
         }
     }
 
@@ -100,6 +104,17 @@ public class CardDeckFragment extends Fragment {
         }else{
             type.setText("魔法");
         }
+
+        Button deleteCardButton = view.findViewById(R.id.deleteCardFromUserCardDeckButton);
+        deleteCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Delete card from deck
+                if(Param_position > 0){
+                    Toast.makeText(getActivity(), "Remove card in position " + Param_position, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 }
