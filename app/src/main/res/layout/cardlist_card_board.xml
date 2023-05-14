@@ -33,65 +33,106 @@
             android:scaleType="fitXY"
             app:srcCompat="@drawable/image08" />
 
+                <TextView
+                    android:id="@+id/cost_bg"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/holo_blue_dark"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginLeft="0dp"/>
+
         <TextView
             android:id="@+id/cost_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="5"
-            android:shadowColor="#000000"
+            android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="1.3"
             android:shadowRadius="2.0"
             android:textAllCaps="true"
-            android:textColor="@android:color/holo_blue_light"
+            android:textColor="@color/white"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="4dp"/>
+
+                <TextView
+                    android:id="@+id/type_bg"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/black"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="0dp"/>
 
         <TextView
             android:id="@+id/type_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2"
-            android:shadowColor="#000000"
+            android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="1.3"
             android:shadowRadius="2.0"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:textColor="@color/white"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="4dp"
             android:layout_marginRight="4dp"/>
+
+                <TextView
+                    android:id="@+id/attack_bg"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/holo_orange_dark"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="0dp"/>
+
 
         <TextView
             android:id="@+id/attack_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10"
-            android:shadowColor="#000000"
+            android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="1.3"
             android:shadowRadius="2.0"
             android:textAllCaps="true"
-            android:textColor="@android:color/holo_orange_dark"
+            android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="4dp"/>
+
+                <TextView
+                    android:id="@+id/health_bg"
+                    android:layout_width="20dp"
+                    android:layout_height="30dp"
+                    android:background="@android:color/holo_red_dark"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginRight="0dp"/>
 
         <TextView
             android:id="@+id/health_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3"
-            android:shadowColor="#000000"
+            android:shadowColor="#FFFFFF"
             android:shadowDx="1.5"
             android:shadowDy="1.3"
             android:shadowRadius="2.0"
             android:textAllCaps="true"
-            android:textColor="@android:color/holo_red_dark"
+            android:textColor="@color/white"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="4dp"

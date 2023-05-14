@@ -1,5 +1,6 @@
 package com.example.cardlords3.game.main;
 
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
             attack= CardJsonArray.getJSONObject(position).getInt("attack");
             raceID = CardJsonArray.getJSONObject(position).getString("raceID");
             rarity = CardJsonArray.getJSONObject(position).getInt("rarity");
+            ((TextView)(holder.itemView.findViewById(R.id.cost_bg))).setBackgroundColor(Color.argb(200, 0, 153, 204));
+            ((TextView)(holder.itemView.findViewById(R.id.type_bg))).setBackgroundColor(Color.argb(200, 0, 0, 0));
+            ((TextView)(holder.itemView.findViewById(R.id.attack_bg))).setBackgroundColor(Color.argb(200, 255, 136, 0));
+            ((TextView)(holder.itemView.findViewById(R.id.health_bg))).setBackgroundColor(Color.argb(200, 204, 0, 0));
 
         } catch (JSONException e) {
             mImagePath = "";
@@ -122,11 +127,19 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         //holder.CardRarityBar.setRating(rarity);
 
 
+        if(rarity==-1) {
+            ((TextView) (holder.itemView.findViewById(R.id.cost_bg))).setBackgroundColor(Color.argb(0, 255, 255, 255));
+            ((TextView) (holder.itemView.findViewById(R.id.type_bg))).setBackgroundColor(Color.argb(0, 255, 255, 255));
+            ((TextView) (holder.itemView.findViewById(R.id.attack_bg))).setBackgroundColor(Color.argb(0, 255, 255, 255));
+            ((TextView) (holder.itemView.findViewById(R.id.health_bg))).setBackgroundColor(Color.argb(0, 255, 255, 255));
+        }
+
+
         int col = position % boardData.length;
         int row = position / boardData.length;
         //TODO Set Cell Data
         //To rotate 180
-        if (BoardCells[col][row].owner == 1)
+        if (BoardCells[row][col].owner == 1)
             holder.itemView.setRotation(180);
 
         //TODO Read Card Data

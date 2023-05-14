@@ -102,7 +102,8 @@ public class GameActivity extends AppCompatActivity {
             }
         }
         BoardCells[3][0].cellID = 3;
-        BoardCells[3][4].cellID = 3;
+        BoardCells[0][2].cellID = 4;
+        BoardCells[0][2].owner = 1;
         //Log.e("BoardCells[2][3]", String.valueOf(BoardCells[2][3].cellID));
         //Array to List & Vice Versa
         /*
