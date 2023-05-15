@@ -140,11 +140,6 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                 BoardCells[i][j].cellID = -1;
             }
         }
-        BoardCells[3][0].cellID = 1;
-        BoardCells[3][0].movable = 1;
-        BoardCells[3][0].owner = 0;
-        BoardCells[0][2].cellID = 4;
-        BoardCells[0][2].owner = 1;
 
         for (int i=0; i<5; i++) {
             for (int j=0; j<5; j++) {
