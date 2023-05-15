@@ -106,17 +106,17 @@ public class CardEditorFragment extends Fragment {
         TextView id = view.findViewById(R.id.card_id_text_view);
         id.setText(Integer.toString(Param_cardID));
 
-        EditText name = view.findViewById(R.id.edit_name);
+        TextView name = view.findViewById(R.id.edit_name);
         name.setText(Param_cardName);
 
-        EditText cost = view.findViewById(R.id.editCost);
+        TextView cost = view.findViewById(R.id.editCost);
         //cost.setInputType(InputType.TYPE_CLASS_NUMBER);
         cost.setText(String.valueOf(Param_cost));
 
-        EditText health = view.findViewById(R.id.editHealth);
+        TextView health = view.findViewById(R.id.editHealth);
         health.setText(String.valueOf(Param_health));
 
-        EditText attack = view.findViewById(R.id.editAttack);
+        TextView attack = view.findViewById(R.id.editAttack);
         attack.setText(String.valueOf(Param_attack));
 
         Button editCardButton = view.findViewById(R.id.editCardFromCardListButton);

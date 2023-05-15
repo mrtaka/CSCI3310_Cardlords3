@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
                         android:text="CardName" />
-                    <EditText
+                    <TextView
                         android:id="@+id/edit_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
                         android:text="Cost" />
-                    <EditText
+                    <TextView
                         android:id="@+id/editCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
                         android:text="Attack" />
-                    <EditText
+                    <TextView
                         android:id="@+id/editAttack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/Grey"
                         android:text="Health" />
-                    <EditText
+                    <TextView
                         android:id="@+id/editHealth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
