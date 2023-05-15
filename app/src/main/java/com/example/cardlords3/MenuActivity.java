@@ -61,7 +61,8 @@ public class MenuActivity extends AppCompatActivity {
                             //Default: set userType as normal user and set default inventory.
                             Map<String, Object> userDoc = new HashMap<>();
                             userDoc.put("userType", 1); // 0 - admin, 1 - normal user, 2 - guest
-                            userDoc.put("inventory", Arrays.asList(1, 2, 3)); // list of card IDs
+                            userDoc.put("inventory", Arrays.asList(1, 2, 3,4,5,6,7,8,9,10,1,2,3,4,
+                                    5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10,1,2,3,4,5,6,7,8,9,10)); // list of card IDs
                             db.collection("users").document(user.getUid()).set(userDoc);
                         }
                     } else {
