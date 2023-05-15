@@ -89,7 +89,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         public int effect3;
 
         public Cell() {
-            owner = 0;  //0=Own, 1=Enemy
+            owner = -1;  //0=Own, 1=Enemy
             cellID = -1;    //-1 means EMPTY
             movable = 0;    //Number of Moves left
             skill_usable = 0;   //Is skill still Active
@@ -120,10 +120,12 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 BoardCells[i][j] = new Cell();
+                BoardCells[i][j].cellID = -1;
             }
         }
         BoardCells[3][0].cellID = 1;
         BoardCells[3][0].movable = 1;
+        BoardCells[3][0].owner = 0;
         BoardCells[0][2].cellID = 4;
         BoardCells[0][2].owner = 1;
 
@@ -347,6 +349,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         if (side == 0) {
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 5; j++) {
+                    Log.e("TESTTEST",String.valueOf(i)+","+String.valueOf(j));
                     if (BoardCells[i][j].owner == side) {
                         if (i>0) {
                             if (BoardCells[i-1][j].cellID == -1)
@@ -355,9 +358,8 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                         } else {
                             //Move to Base
                             //if (enemyBase.get(j) != -1) {
-                            Log.e("Test2","");
                             Destroy(i, j);
-                            //EndZone(j, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+                            EndZone(j, enemyBase, findViewById(R.id.enemy_base_fragment_container));
                             //}
                         }
                     }
@@ -367,6 +369,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         else {
             for (int i = 4; i >= 0; i--) {
                 for (int j = 0; j < 5; j++) {
+                    Log.e("TESTTEST",String.valueOf(i)+","+String.valueOf(j));
                     if (BoardCells[i][j].owner == side) {
                         if (i<4) {
                             if (BoardCells[i+1][j].cellID == -1)
@@ -376,7 +379,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                             //Move to Base
                             //if (enemyBase.get(j) != -1) {
                                 Destroy(i,j);
-                                //EndZone(j, ownBase, findViewById(R.id.own_base_fragment_container));
+                                EndZone(j, ownBase, findViewById(R.id.own_base_fragment_container));
                             //}
                         }
                     }
@@ -386,12 +389,15 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     }
 
     private void Destroy(int i1, int j1) {
+        //Log.e("Game Over", "");
         BoardCells[i1][j1] = new Cell();
+        BoardCells[i1][j1].cellID = -1;
     }
 
     private void Move(int i1, int j1, int i2, int j2) {
         BoardCells[i2][j2] = BoardCells[i1][j1];
         BoardCells[i1][j1] = new Cell();
+        BoardCells[i1][i1].cellID = -1;
     }
 
     private void TurnEnd() {
@@ -481,7 +487,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         //Set Variables
             if (base == enemyBase) {
                 ownConquers++;
-                if(ownConquers == 3) {
+                if(ownConquers >= 3) {
                     OwnWin();
                 }
                 enemyMaxMana++;
@@ -489,7 +495,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             }
             else {
                 enemyConquers++;
-                if(enemyConquers == 3) {
+                if(enemyConquers >= 3) {
                     EnemyWin();
                 }
                 ownMaxMana++;
@@ -524,9 +530,13 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
     //TODO: Win, DO STUFF
     private void EnemyWin() {
+        Toast toast = Toast.makeText(this, "Player 2 Wins!", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     private void OwnWin() {
+        Toast toast = Toast.makeText(this, "Player 1 Wins!", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     //TODO: Enemy draw card to hand or base
