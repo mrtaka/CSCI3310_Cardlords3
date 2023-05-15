@@ -1,6 +1,7 @@
 package com.example.cardlords3.game;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -21,11 +23,17 @@ import com.example.cardlords3.R;
 import com.example.cardlords3.game.main.BaseFragment;
 import com.example.cardlords3.game.main.BoardAdapter;
 import com.example.cardlords3.game.main.BoardFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -109,10 +117,12 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
         //TODO: Create Data
+        fetchAndSaveFirestoreData();
         turn = 1;
         int[] enemyDeckDummy = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
         int[] ownDeckDummy = new int[]{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
@@ -925,7 +935,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     private void loadJson(){
         try{
             //load json
-            InputStream inputStream = getResources().openRawResource(R.raw.cardlist);
+            InputStream inputStream = openFileInput("cardlist.json");
             int size = inputStream.available();
             byte[] buffer=new byte[size];
             inputStream.read(buffer);
@@ -936,10 +946,10 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             int max;
 
             json = new String(buffer, StandardCharsets.UTF_8);
-            JSONObject jsonObject = new JSONObject(json);
+            //JSONObject jsonObject = new JSONObject(json);
             //Log.e("Tag", "the json is " + jsonObject);
-            CardJsonArray = new JSONArray(jsonObject.getString("Cards"));
-            //Log.e("Tag", "the jsonArray is " + CardJsonArray);
+            CardJsonArray = new JSONArray(json);
+            Log.e("Tag", "the jsonArray is " + CardJsonArray);
             max = CardJsonArray.length();
 
             //now fetch each json items
@@ -993,4 +1003,39 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         Log.e("INV_JSON", "InventoryJsonArray: " + InventoryJsonArray);
         Log.e("INV_JSON_LENGTH", "InventoryJsonArray: " + InventoryJsonArray.length());
     }
+
+    private void fetchAndSaveFirestoreData() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("CardDB").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    JSONArray jsonArray = new JSONArray();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        JSONObject jsonObjectItem = new JSONObject(document.getData());
+                        jsonArray.put(jsonObjectItem);
+                    }
+                    String jsonString = jsonArray.toString();
+                    saveDataToLocalFile(jsonString);
+                    Log.e("SaveData", jsonString);
+                } else {
+                    Log.d("TAG", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
+    private void saveDataToLocalFile(String data) {
+        String filename = "cardlist.json";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(data.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
