@@ -5,6 +5,7 @@ package com.example.cardlords3.game;
 //
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import com.example.cardlords3.CardDeckFragment;
 import com.example.cardlords3.CardEditorFragment;
 import com.example.cardlords3.R;
-import com.example.cardlords3.game.main.BoardAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,6 +32,9 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     private Context context;
     private LayoutInflater mInflater;
     private GameActivity gameActivity;
+    private int hand_Position;
+    private int hand_side;
+    private int playable;
 
     private JSONArray CardJsonArray = new JSONArray();
 
@@ -51,7 +53,7 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     private OnItemClickListener mListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position, int side, int num);
+        void onHandCardClick(int position, int side, int id, int cost, int placeType);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -69,6 +71,7 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
         TextView CardType;
         TextView CardRace;
         RatingBar CardRarityBar;
+        TextView Glower;
 
         final CardListAdapterBoard mAdapter;
 
@@ -83,6 +86,7 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
             CardAttack = itemView.findViewById(R.id.attack_textview);
             CardType = itemView.findViewById(R.id.type_textview);
             CardRace = itemView.findViewById(R.id.race_textview);
+            Glower = itemView.findViewById(R.id.hand_card_glow);
             this.mAdapter = adapter;
 
             // Event handling registration, page navigation goes here
@@ -92,10 +96,37 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
                 public void onClick(View v) {
                     //=====================test========================
                     if (mListener != null) {
-                        mListener.onItemClick(getAdapterPosition(),side,1);
+                        int position = getAdapterPosition();
+                        Integer cardID = 0;
+                        Integer cost = 0;
+                        Integer typeID = 0;
+                        int placeType = 0;
+                        try {
+                            cardID = CardJsonArray.getJSONObject(position).getInt("cardID");
+                            cost= CardJsonArray.getJSONObject(position).getInt("cost");
+                            typeID= CardJsonArray.getJSONObject(position).getInt("typeID");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (typeID == 3) {  //Magic
+                            placeType = 2;
+                            // 0 normal_soldier
+                            // 1 magic_self_card
+                            // 2 magic_anywhere
+                            // 3 magic_enemy_card
+                            // 4 magic_all_empty
+                            // 5 magic_all_empty_except_last_line
+                            // 6 anywhere_soldier_except_last_line
+                        }
+                        else {  //Soldier
+                            placeType = 0;
+                        }
+
+                        mListener.onHandCardClick(position,side,cardID.intValue(),cost.intValue(),placeType);
                     }
                     //=================================================
-
+                    /*
                     // Get the position of the item that was clicked.
                     int position = getLayoutPosition();
 
@@ -151,6 +182,7 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
                     }
 
                     BoardAdapter.PreparePlace(GameActivity.handCardPlaceType, side, position, cardID.intValue());
+                    */
                 }
             });
             // End of ViewHolder initialization
@@ -158,12 +190,15 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
     }
 
     //================changed here==========================
-    public CardListAdapterBoard(Context context, JSONArray CardJsonArray, int side, GameActivity gameActivity) { /*, FragmentManager fragmentManager, Integer FragmentType*/
+    public CardListAdapterBoard(Context context, JSONArray CardJsonArray, int side, GameActivity gameActivity, int hand_Position, int hand_side, int playable) { /*, FragmentManager fragmentManager, Integer FragmentType*/
         mInflater = LayoutInflater.from(context);
         this.CardJsonArray = CardJsonArray;
         this.context = context;
         this.side = side;
         this.gameActivity = gameActivity;
+        this.hand_Position = hand_Position;
+        this.hand_side = hand_side;
+        this.playable = playable;
     }
 
     @NonNull
@@ -223,6 +258,22 @@ public class CardListAdapterBoard extends Adapter<CardListAdapterBoard.CardViewH
         holder.CardImageItemView.setImageURI(uri);
         holder.CardRarityBar.setRating(rarity);
 
+        if (side == hand_side && position == hand_Position) {
+            //TODO - Make it GLOW
+            holder.Glower.setVisibility(View.VISIBLE);
+            if (playable == 1) {
+                holder.Glower.setBackgroundColor(Color.argb(
+                        50, 50, 255, 0));
+            } else if (playable == 0) {
+                holder.Glower.setBackgroundColor(Color.argb(
+                        50, 255, 0, 0));
+            } else {
+                holder.Glower.setVisibility(View.INVISIBLE);
+            }
+        }
+        else {
+            holder.Glower.setVisibility(View.INVISIBLE);
+        }
     }
 
     public long getItemId(int position) {

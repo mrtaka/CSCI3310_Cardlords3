@@ -155,6 +155,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
             -->
+
+        <TextView
+            android:id="@+id/board_card_glow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/purple_200"
+            android:visibility="invisible"
+            android:scaleType="fitXY"/>
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

@@ -1,10 +1,12 @@
 package com.example.cardlords3.game;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,12 +17,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cardlords3.CardListAdapter;
 import com.example.cardlords3.R;
 import com.example.cardlords3.game.main.BaseFragment;
+import com.example.cardlords3.game.main.BoardAdapter;
 import com.example.cardlords3.game.main.BoardFragment;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
@@ -30,11 +33,13 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class GameActivity extends AppCompatActivity implements CardListAdapterBoard.OnItemClickListener{
-    public static int handCardSideSelected = -1;
-    public static int handCardSelected = -1;
-    public static int handCardPlaceType = 0;
-    public static int handCardIDSelected = -1;
+public class GameActivity extends AppCompatActivity implements CardListAdapterBoard.OnItemClickListener, BoardAdapter.OnItemClickListener {
+    private int hand_Position = -1;
+    private int hand_side = -1;
+    private int hand_id = -1;
+    private int hand_cost = 0;
+    private int hand_placeType = -1;
+
     private RecyclerView mRecyclerView;
     private CardListAdapterBoard mAdapter;
 
@@ -69,6 +74,11 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     private int enemyDeckDrawable = 0;
     private int ownDeckDrawable = 0;
 
+    private boolean menuOpen = false;
+    private boolean movable = false;
+    private boolean attackable = false;
+    private boolean skillable = false;
+
     public class Cell {
         public int owner;  //0=Own, 1=Enemy
         public int cellID;
@@ -92,6 +102,10 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     Cell[][] BoardCells = new Cell[5][5];
     public static boolean[][] clickable = new boolean[5][5];
 
+    Fragment newEnemyBaseFragment1 = new BaseFragment(1);
+    Fragment newBoardFragment = new BoardFragment(BoardCells, this);
+    Fragment newOwnBaseFragment2 = new BaseFragment(0);
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,12 +122,13 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                 BoardCells[i][j] = new Cell();
             }
         }
-        BoardCells[3][0].cellID = 3;
+        BoardCells[3][0].cellID = 1;
+        BoardCells[3][0].movable = 1;
         BoardCells[0][2].cellID = 4;
         BoardCells[0][2].owner = 1;
 
-        for(int i=0; i<5; i++) {
-            for(int j=0; j<5; j++) {
+        for (int i=0; i<5; i++) {
+            for (int j=0; j<5; j++) {
                 clickable[i][j] = false;
             }
         }
@@ -144,9 +159,11 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         Collections.shuffle(ownDeck);
 
         //TODO: Board Fragments
+        /*
         Fragment newEnemyBaseFragment1 = new BaseFragment(1);
         Fragment newBoardFragment = new BoardFragment(BoardCells, this);
         Fragment newOwnBaseFragment2 = new BaseFragment(0);
+        */
 
         //TopFragment topFragment = new TopFragment();
         getSupportFragmentManager().beginTransaction()
@@ -166,20 +183,18 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         loadJson();
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
-        //TODO: Hand RecyclerViews
-        //get user inventory, and link then with each cards detail object
-        //Load Enemy Hand
-        //loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand));
-        //Load Own Hand
-        //loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand));
-
-
-        // Get a reference to the View
+        //TODO: Get a references to Views
         View enemyDeckView = findViewById(R.id.enemy_deck);
         View ownDeckView = findViewById(R.id.own_deck);
         TextView enemyDeckCountView = findViewById(R.id.enemy_deck_count);
         TextView ownDeckCountView = findViewById(R.id.own_deck_count);
         Button turnEndButton = findViewById(R.id.turnEndButton);
+
+        TextView closeCardInfoButton = findViewById(R.id.close_button);
+        Button moveButton = findViewById(R.id.move_button);
+        Button attackButton = findViewById(R.id.attack_button);
+        Button skillButton = findViewById(R.id.skill_button);
+        Button informationButton = findViewById(R.id.info_button);
 
         loadDeck(enemyDeck.size(), enemyDeckView, enemyDeckCountView);
         loadDeck(ownDeck.size(), ownDeckView, ownDeckCountView);
@@ -198,8 +213,8 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                         enemyDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
                         enemyDeckColorView.invalidate();
                     }
-                    EnemyDrawDeck(1, enemyHand);
-                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1);
+                    EnemyDrawDeck(1, enemyHand, true);
+                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1, hand_Position, hand_side, 1);
                 }
             }
         });
@@ -214,17 +229,62 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                         ownDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
                         ownDeckColorView.invalidate();
                     }
-                    OwnDrawDeck(1, ownHand);
-                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0);
+                    OwnDrawDeck(1, ownHand, true);
+                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0, hand_Position, hand_side, 1);
                 }
             }
         });
-        // Set a click listener on turnEndButton
+        //TODO -  Set a click listener on turnEndButton
         turnEndButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TurnEnd();
                 loadBoard();
+            }
+        });
+        //TODO -  Set a click listener on CloseCardInfoButton
+        closeCardInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuOpen) {
+                    CloseOptions();
+                }
+            }
+        });
+        //TODO -  Set a click listener on MoveButton
+        moveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (movable) {
+                    CloseOptions();
+                }
+            }
+        });
+        //TODO -  Set a click listener on AttackButton
+        attackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (attackable) {
+                    CloseOptions();
+                }
+            }
+        });
+        //TODO -  Set a click listener on SkillButton
+        skillButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (skillable) {
+                    CloseOptions();
+                }
+            }
+        });
+        //TODO -  Set a click listener on InformationButton
+        informationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuOpen) {
+                    CloseOptions();
+                }
             }
         });
 
@@ -236,29 +296,37 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
         //TODO: TURN 1
         //TODO: Draw 5 to Hand
-        EnemyDrawDeck(5, enemyHand);
-        OwnDrawDeck(5, ownHand);
-        loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1);
-        loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0);
+        EnemyDrawDeck(5, enemyHand, false);
+        OwnDrawDeck(5, ownHand, false);
+        loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, 1);
+        loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, 1);
 
         //TODO: Draw 5 to Base
-        EnemyDrawDeck(5, enemyBase);
-        OwnDrawDeck(5, ownBase);
+        EnemyDrawDeck(5, enemyBase, false);
+        OwnDrawDeck(5, ownBase, false);
         loadBase(ownBase, findViewById(R.id.own_base_fragment_container));
         loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
 
         //EndZone and enemy draw
         EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
-        loadBoard();
     }
 
 //TODO: Functions
 
     //TODO:
     private void loadBoard() {
-        View boardRecyclerView = findViewById(R.id.board_fragment_container);
+        //BoardFragment boardFragment = (BoardFragment) getSupportFragmentManager().findFragmentById(R.id.board_fragment_container);
+        ((BoardFragment)newBoardFragment).reloadData(BoardCells);
+        /*
+        View boardRecyclerView = newBoardFragment.getView().findViewById(R.id.board_recycler_view);
         boardRecyclerView.invalidate();
+        */
 
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                Log.e("BoardCells["+String.valueOf(i)+"]["+String.valueOf(j)+"].cellID", String.valueOf(BoardCells[i][j].cellID));
+            }
+        }
 
         for(int i=0; i<5; i++) {
             for(int j=0; j<5; j++) {
@@ -266,13 +334,13 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             }
         }
     }
-
+    /*
     //TODO:
     public static void loadBoardGlobal(GameActivity gameActivity) {
         View boardRecyclerView = gameActivity.findViewById(R.id.board_fragment_container);
         boardRecyclerView.invalidate();
     }
-
+    */
     //TODO: End Turn
     private void TurnEnd() {
         turn++;
@@ -285,6 +353,33 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                 clickable[i][j] = false;
             }
         }
+
+        CellsToJSON();
+        int type = -1;
+        String checkTypes = "";
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<5; j++) {
+                BoardCells[i][j].movable = 0;
+                type = -1;
+                if ((turn+1)%2 == BoardCells[i][j].owner) {
+                    try {
+                        type = CardJsonArray.getJSONObject(5 * i + j).getInt("typeID");
+                        Log.e("boardCellType", String.valueOf(type));
+                        if (type == 1) {
+                            BoardCells[i][j].movable = 1;
+                        } else if (type == 2) {
+                            BoardCells[i][j].movable = 2;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                checkTypes += String.valueOf(type);
+            }
+        }
+        //TODO - DEBUG THIS
+        Log.e("CheckTypes", checkTypes);
+
 
         if (turn%2 == 1) {
             if (ownDeck.size() > 0) {
@@ -306,6 +401,26 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         enemyMovesCount = enemyMaxMoves;
         ownManaCount = ownMaxMana;
         ownMovesCount = ownMaxMoves;
+
+        //Reset selected
+        ResetSelected(true);
+    }
+
+    private void ResetSelected(boolean loadBoardFlag) {
+        hand_Position = -1;
+        hand_side = -1;
+        hand_id = -1;
+        hand_cost = 0;
+        hand_placeType = -1;
+        for (int i=0; i<5; i++) {
+            for (int j=0; j<5; j++) {
+                clickable[i][j] = false;
+            }
+        }
+        if (loadBoardFlag)
+            loadBoard();
+        loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, 1);
+        loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, 1);
     }
 
     //TODO: Reach End Zone
@@ -340,12 +455,12 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
             if (base == enemyBase) {
                 enemyHand.add(baseCardID);
-                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1);
+                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1, hand_Position, hand_side, 1);
                 loadData(enemyMaxMana, enemyMaxMoves, enemyHand.size(), enemyGraveCount, enemyDataTextView);
             }
             else {
                 ownHand.add(baseCardID);
-                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0);
+                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0, hand_Position, hand_side, 1);
                 loadData(ownMaxMana, ownMaxMoves, ownHand.size(), ownGraveCount, ownDataTextView);
             }
 
@@ -362,7 +477,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     }
 
     //TODO: Enemy draw card to hand or base
-    private void EnemyDrawDeck(int num, List<Integer> handOrBase) {
+    private void EnemyDrawDeck(int num, List<Integer> handOrBase, boolean loadBoardAfter) {
         View enemyDeckView = findViewById(R.id.enemy_deck);
         TextView enemyDeckCountView = findViewById(R.id.enemy_deck_count);
         for (int i=0; i<num; i++) {
@@ -378,10 +493,13 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             enemyDeckColorView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.Grey));
             enemyDeckColorView.invalidate();
         }
+
+        //Reset selected
+        ResetSelected(loadBoardAfter);
     }
 
     //TODO: Own draw card to hand or base
-    private void OwnDrawDeck(int num, List<Integer> handOrBase) {
+    private void OwnDrawDeck(int num, List<Integer> handOrBase, boolean loadBoardAfter) {
         View ownDeckView = findViewById(R.id.own_deck);
         TextView ownDeckCountView = findViewById(R.id.own_deck_count);
         for (int i=0; i<num; i++) {
@@ -397,6 +515,9 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             ownDeckColorView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.Grey));
             ownDeckColorView.invalidate();
         }
+
+        //Reset selected
+        ResetSelected(loadBoardAfter);
     }
 
     //TODO: Turn Number
@@ -418,7 +539,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
     }
 
     //TODO: Hand info
-    private void loadHand(List<Integer> handInventory, RecyclerView handView, boolean scrollToLastPosBool, int side) {
+    private void loadHand(List<Integer> handInventory, RecyclerView handView, boolean scrollToLastPosBool, int side, int hand_Position, int hand_side, int playable) {
         InventoryJsonArray = new JSONArray();
         int[] handIntArray = new int[handInventory.size()];
         for (int i = 0; i < handInventory.size(); i++) {
@@ -430,7 +551,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         //create recyclerview
         mRecyclerView = handView;
         //To create fragment
-        mAdapter = new CardListAdapterBoard(this, InventoryJsonArray, side, this); //, getSupportFragmentManager(), 1
+        mAdapter = new CardListAdapterBoard(this, InventoryJsonArray, side, this, hand_Position, hand_side, playable); //, getSupportFragmentManager(), 1
         // Connect the adapter with the RecyclerView
 
         mAdapter.setOnItemClickListener(this);
@@ -440,6 +561,10 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
         if (scrollToLastPosBool) {
             mRecyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+        }
+        else {
+            if (hand_Position != -1)
+                mRecyclerView.scrollToPosition(hand_Position);
         }
         Log.e("Tag", "On create run");
 
@@ -451,12 +576,289 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
     //=================test===================
     @Override
-    public void onItemClick(int position, int side, int num) {
-        // Do something with the data
-        Toast t = Toast.makeText(this, "Recycle view return Position: " + position + "Side is: " + side, Toast.LENGTH_SHORT);
-        t.show();
+    public void onHandCardClick(int position, int side, int id, int cost, int placeType) {
+        int currentMana = 0;
+        if (turn%2 == 1) { //Own turn
+            currentMana = ownManaCount;
+        }
+        else {
+            currentMana = enemyManaCount;
+        }
+
+        if ((turn+1)%2 == side) {   //Make sure it's the correct player clicking
+            // Do something with the data
+            Toast t = Toast.makeText(this, "Position: " + position + ",\nid is: " + id + ",\nCost is: " + cost + ",\nSide is: " + side + ",\nPlaceType is: " + placeType, Toast.LENGTH_SHORT);
+            t.show();
+
+            int playable = 2;
+
+            if (cost <= currentMana) {
+                //Playable
+                hand_Position = position;
+                hand_side = side;
+                hand_id = id;
+                hand_cost = cost;
+                hand_placeType = placeType;
+                //TODO - Do something on board
+                PreparePlace();
+
+                playable = 1;
+            }
+            else {
+                //Not playable
+                hand_Position = position;
+                hand_side = side;
+                hand_id = -1;
+                hand_cost = 99;
+                hand_placeType = -1;
+                for (int i=0; i<5; i++) {
+                    for (int j=0; j<5; j++) {
+                        clickable[i][j] = false;
+                    }
+                }
+                loadBoard();
+                playable = 0;
+            }
+
+            if (side == 0)
+                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, playable);
+            else
+                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, playable);
+        }
     }
     //=================test===================
+    @Override
+    public void onBoardCellClick(int row, int col) {
+        // Do something with the data
+        Toast t = Toast.makeText(this, "row: " + row + ",\ncol: " + col, Toast.LENGTH_SHORT);
+        t.show();
+
+        if (clickable[row][col]) {  //To place or use a card
+            Log.e("THIS IS CLICKABLE", "true");
+            if (hand_id != -1) {    //Card selected
+
+                //TODO - Use card
+                if (hand_placeType == 0 || hand_placeType == 6) {
+                    //It's a Soldier!
+                    //TODO - Place card to board
+                    BoardCells[row][col].owner = hand_side;
+                    BoardCells[row][col].cellID = hand_id;
+                    CellsToJSON();
+                    int skill = -1;
+                    try {
+                        skill = CardJsonArray.getJSONObject(5 * row + col).getInt("skillID");
+                        if (skill > 0) {
+                            if(CheckIfSkillIs_ActiveSkill(skill))
+                                BoardCells[row][col].skill_usable = 1;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    //It's a Magic!
+                    //TODO - Do Magic Stuff
+                    switch(hand_id) {
+                        default:
+                            break;
+                    }
+                }
+
+
+                if (hand_side == 0) {
+                    //OWN
+                    //TODO - Subtract mana
+                    ownManaCount -= hand_cost;
+                    //TODO - Remove card from hand
+                    ownHand.remove(hand_Position);
+                    //TODO - Load board and hand and data
+                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, 2);
+                    ResetSelected(true);
+
+                    TextView ownDataTextView = findViewById(R.id.ownDataView);
+                    loadData(ownManaCount, ownMovesCount, ownHand.size(), ownGraveCount, ownDataTextView);
+
+                } else {
+                    //ENEMY
+                    //TODO - Subtract mana
+                    enemyManaCount -= hand_cost;
+                    //TODO - Remove card from hand
+                    enemyHand.remove(hand_Position);
+                    //TODO - Load board and hand and data
+                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, 2);
+                    ResetSelected(true);
+
+                    TextView enemyDataTextView = findViewById(R.id.enemyDataView);
+                    loadData(enemyManaCount, enemyMovesCount, enemyHand.size(), enemyGraveCount, enemyDataTextView);
+                }
+            }
+        } else {
+            //TODO: Trying to tap on a card
+            if (BoardCells[row][col].cellID != -1) {    //Check if card exists
+                menuOpen = true;
+                movable = false;
+                attackable = false;
+                skillable = false;
+
+                if((turn+1)%2 == BoardCells[row][col].owner) {
+                    if (BoardCells[row][col].movable > 0) {
+                        if (row > 0 && BoardCells[row - 1][col].cellID == -1)
+                            movable = true;
+                        if (col > 0 && BoardCells[row][col - 1].cellID == -1)
+                            movable = true;
+                        if (row < 4 && BoardCells[row + 1][col].cellID == -1)
+                            movable = true;
+                        if (col < 4 && BoardCells[row][col + 1].cellID == -1)
+                            movable = true;
+
+                        if (row > 0 && BoardCells[row - 1][col].cellID != -1 && BoardCells[row][col].owner != BoardCells[row - 1][col].owner)
+                            movable = true;
+                        if (col > 0 && BoardCells[row][col - 1].cellID != -1 && BoardCells[row][col].owner != BoardCells[row][col - 1].owner)
+                            movable = true;
+                        if (row < 4 && BoardCells[row + 1][col].cellID != -1 && BoardCells[row][col].owner != BoardCells[row + 1][col].owner)
+                            movable = true;
+                        if (col < 4 && BoardCells[row][col + 1].cellID != -1 && BoardCells[row][col].owner != BoardCells[row][col + 1].owner)
+                            movable = true;
+                    }
+                    if (BoardCells[row][col].skill_usable > 0)
+                        skillable = true;
+                }
+
+                if(movable)
+                    ((Button) findViewById(R.id.move_button)).setEnabled(true);
+                if(attackable)
+                    ((Button) findViewById(R.id.attack_button)).setEnabled(true);
+                if(skillable)
+                    ((Button) findViewById(R.id.skill_button)).setEnabled(true);
+                ((Button) findViewById(R.id.info_button)).setEnabled(true);
+
+                ((Button) findViewById(R.id.move_button)).setBackgroundColor(Color.rgb(0, 180, 30));
+                ((Button) findViewById(R.id.attack_button)).setBackgroundColor(Color.rgb(230, 0, 0));
+                ((Button) findViewById(R.id.skill_button)).setBackgroundColor(Color.rgb(130, 0, 130));
+                ((Button) findViewById(R.id.info_button)).setBackgroundColor(Color.rgb(30, 30, 30));
+                ((TextView) findViewById(R.id.close_button)).setBackgroundColor(Color.rgb(180, 0, 0));
+
+                ((LinearLayout) findViewById(R.id.cell_choices)).setVisibility(View.VISIBLE);
+                ((LinearLayout) findViewById(R.id.cell_choices)).invalidate();
+                //TODO: Move/Attack/Skill
+            }
+        }
+
+    }
+
+    private boolean CheckIfSkillIs_ActiveSkill(int skill) {
+        //If is an active skill, set to true
+        return false;   //passive skill
+    }
+    //=================test===================
+
+    private void CloseOptions() {
+        menuOpen = false;
+        movable = false;
+        attackable = false;
+        skillable = false;
+        ((LinearLayout) findViewById(R.id.cell_choices)).setVisibility(View.INVISIBLE);
+        ((Button) findViewById(R.id.move_button)).setEnabled(false);
+        ((Button) findViewById(R.id.attack_button)).setEnabled(false);
+        ((Button) findViewById(R.id.skill_button)).setEnabled(false);
+        ((Button) findViewById(R.id.info_button)).setEnabled(false);
+
+        ((LinearLayout) findViewById(R.id.cell_choices)).invalidate();
+    }
+
+    private void PreparePlace() {
+        for (int i=0; i<5; i++) {
+            for (int j=0; j<5; j++) {
+                clickable[i][j] = false;
+            }
+        }
+        switch(hand_placeType) {
+            case 0:
+                // 0 normal_soldier
+                //TODO: Make all empty back-rank glow and clickable
+                if (hand_side == 0) {    //own
+                    for(int i=0; i<5; i++) {
+                        if (BoardCells[4][i].cellID == -1) {
+                            GameActivity.clickable[4][i] = true;
+                            Log.e("Clickable Pos", String.valueOf(i));
+                        }
+                    }
+                }
+                else {    //enemy
+                    for(int i=0; i<5; i++) {
+                        if (BoardCells[0][i].cellID == -1) {
+                            GameActivity.clickable[0][i] = true;
+                            Log.e("Clickable Pos", String.valueOf(i));
+                        }
+                    }
+                }
+                break;
+            case 1:
+                // 1 magic_self_card
+                //TODO: Make all owner's cards glow and clickable
+                for(int i=0; i<5; i++) {
+                    for(int j=0; j<5; j++) {
+                        if (BoardCells[i][j].owner == hand_side)
+                            GameActivity.clickable[i][j] = true;
+                    }
+                }
+                break;
+            case 2:
+                // 2 magic_anywhere
+                //TODO: Make all cells glow and clickable
+                for(int i=0; i<5; i++) {
+                    for(int j=0; j<5; j++) {
+                        GameActivity.clickable[i][j] = true;
+                    }
+                }
+                break;
+            case 3:
+                // 3 magic_enemy_card
+                //TODO: Make all enemy's glow and clickable
+                for(int i=0; i<5; i++) {
+                    for(int j=0; j<5; j++) {
+                        if (BoardCells[i][j].owner + hand_side == 1)
+                            GameActivity.clickable[i][j] = true;
+                    }
+                }
+                break;
+            case 4:
+                // 4 magic_all_empty
+                //TODO: Make all EMPTY cells glow and clickable
+                for(int i=0; i<5; i++) {
+                    for(int j=0; j<5; j++) {
+                        if (BoardCells[i][j].cellID == -1)
+                            GameActivity.clickable[i][j] = true;
+                    }
+                }
+                break;
+            case 5:
+            case 6:
+                // 6 anywhere_soldier_except_last_line
+                // 5 magic_all_empty_except_last_line
+                //TODO: Make all EMPTY cells glow and clickable except last line
+                if (hand_side == 0) {   //own
+                    for (int i = 1; i < 5; i++) {
+                        for (int j = 0; j < 5; j++) {
+                            if (BoardCells[i][j].cellID == -1)
+                                GameActivity.clickable[i][j] = true;
+                        }
+                    }
+                }
+                else {  //enemy
+                    for (int i = 0; i < 4; i++) {
+                        for (int j = 0; j < 5; j++) {
+                            if (BoardCells[i][j].cellID == -1)
+                                GameActivity.clickable[i][j] = true;
+                        }
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        loadBoard();
+    }
 
     //TODO: Base info
     private void loadBase(List<Integer> Base, View baseView) {
@@ -515,5 +917,23 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         {
             Log.e("Tag", "from inventory Json: error "+e);
         }
+    }
+
+    private void CellsToJSON() {
+        InventoryJsonArray = new JSONArray();
+        //load each type of cd data from json
+        loadJson();
+        Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
+
+        int[] inventory = new int[25];
+        for (int i=0; i<5; i++) {
+            for (int j=0; j<5; j++) {
+                inventory[5*i+j] = BoardCells[i][j].cellID;
+                //Log.e("inventory["+String.valueOf(5*i+j)+"]", String.valueOf(BoardCells[i][j].cellID));
+            }
+        }
+        inventoryJson(inventory);
+        Log.e("INV_JSON", "InventoryJsonArray: " + InventoryJsonArray);
+        Log.e("INV_JSON_LENGTH", "InventoryJsonArray: " + InventoryJsonArray.length());
     }
 }

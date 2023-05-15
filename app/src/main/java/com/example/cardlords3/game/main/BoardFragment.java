@@ -25,12 +25,14 @@ import java.nio.charset.StandardCharsets;
 
 public class BoardFragment extends Fragment {
 
+    private View rootView;
+
     private GameViewModel mViewModel;
     private GameActivity.Cell[][] BoardCells;
     private GameActivity gameActivityParent;
 
     public BoardFragment(GameActivity.Cell[][] cells, GameActivity gameActivityParent) {
-        BoardCells = cells;
+        this.BoardCells = cells;
         this.gameActivityParent = gameActivityParent;
     }
 
@@ -58,6 +60,23 @@ public class BoardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        CellsToJSON();
+
+        rootView = inflater.inflate(R.layout.board_fragment, container, false);
+
+        boardRecyclerView = rootView.findViewById(R.id.board_recycler_view);
+        boardRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 5));
+        boardData = new int[5][5];
+        boardAdapter = new BoardAdapter(boardData, BoardCells, InventoryJsonArray, gameActivityParent);
+
+        boardAdapter.setOnItemClickListener(gameActivityParent);
+        boardRecyclerView.setAdapter(boardAdapter);
+
+        return rootView;
+    }
+
+    private void CellsToJSON() {
+        InventoryJsonArray = new JSONArray();
         //load each type of cd data from json
         loadJson();
         Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
@@ -72,16 +91,18 @@ public class BoardFragment extends Fragment {
         inventoryJson(inventory);
         Log.e("INV_JSON", "InventoryJsonArray: " + InventoryJsonArray);
         Log.e("INV_JSON_LENGTH", "InventoryJsonArray: " + InventoryJsonArray.length());
+    }
 
-        View view = inflater.inflate(R.layout.board_fragment, container, false);
-
-        boardRecyclerView = view.findViewById(R.id.board_recycler_view);
-        boardRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-        boardData = new int[5][5];
-        boardAdapter = new BoardAdapter(boardData, BoardCells, InventoryJsonArray, gameActivityParent);
-        boardRecyclerView.setAdapter(boardAdapter);
-
-        return view;
+    public void reloadData(GameActivity.Cell[][] cells) {
+        //TODO - Re-fetch Cell Data
+        this.BoardCells = cells;
+        CellsToJSON();
+        boardAdapter.setData(cells, InventoryJsonArray);
+        // Reload the data in the RecyclerView adapter here
+        boardRecyclerView.getAdapter().notifyDataSetChanged();
+        //View boardRecyclerView = findViewById(R.id.board_recycler_view);
+        //rootView.findViewById(R.id.board_recycler_view).invalidate();
+        Log.e("RELOADING DATA", "reload reload reload");
     }
 
     private void loadJson(){

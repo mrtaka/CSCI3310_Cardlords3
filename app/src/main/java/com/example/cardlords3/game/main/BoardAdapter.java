@@ -1,5 +1,6 @@
 package com.example.cardlords3.game.main;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
@@ -24,8 +25,21 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
     private final int[][] boardData;
     private static GameActivity.Cell[][] BoardCells;
     private static GameActivity gameActivityParent;
+    private Context context;
 
     private JSONArray CardJsonArray = new JSONArray();
+
+    //=====================test==========================
+    private BoardAdapter.OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onBoardCellClick(int row, int col);
+    }
+
+    public void setOnItemClickListener(BoardAdapter.OnItemClickListener listener) {
+        mListener = listener;
+    }
+    //=====================test==========================
 
     public BoardAdapter(int[][] boardData, GameActivity.Cell[][] cells, JSONArray inventoryJsonArray, GameActivity gameActivity) {
         this.boardData = boardData;
@@ -34,52 +48,87 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         this.gameActivityParent = gameActivity;
     }
 
-    public static void PreparePlace(int handCardPlaceType, int side, int position, int intValue) {
-        switch(handCardPlaceType) {
-            case 0:
-                // 0 normal_soldier
-                //TODO: Make all empty back-rank glow and clickable
-                if (side == 0) {    //own
-                    for(int i=0; i<5; i++) {
-                        if (BoardCells[4][i].cellID == -1) {
-                            GameActivity.clickable[4][i] = true;
-                            Log.e("Clickable Pos", String.valueOf(i));
-                        }
-                    }
-                }
-                else {    //enemy
-                    for(int i=0; i<5; i++) {
-                        if (BoardCells[0][i].cellID == -1) {
-                            GameActivity.clickable[0][i] = true;
-                            Log.e("Clickable Pos", String.valueOf(i));
-                        }
-                    }
-                }
-                break;
-            case 1:
-                // 1 magic_self_card
-                break;
-            case 2:
-                // 2 magic_anywhere
-                break;
-            case 3:
-                // 3 magic_enemy_card
-                break;
-            case 4:
-                // 4 magic_all_empty
-                break;
-            case 5:
-                // 5 magic_all_empty_except_last_line
-                break;
-            case 6:
-                // 6 anywhere_soldier_except_last_line
-                break;
-            default:
-                break;
-        }
-
-        GameActivity.loadBoardGlobal(gameActivityParent);
+    public void setData(GameActivity.Cell[][] cells, JSONArray inventoryJsonArray) {
+        this.BoardCells = cells;
+        this.CardJsonArray = inventoryJsonArray;
     }
+
+
+
+
+
+
+    class CellViewHolder extends RecyclerView.ViewHolder {
+
+        CardView CellCardItemView;
+        /*
+        TextView CardName;
+        TextView CardCost;
+        TextView CardHealth;
+        TextView CardAttack;
+        TextView CardType;
+        TextView CardRace;
+        RatingBar CardRarityBar;
+        TextView Glower;
+        */
+
+        final BoardAdapter bAdapter;
+
+        public CellViewHolder(View itemView, BoardAdapter adapter) {
+            super(itemView);
+
+            CellCardItemView = itemView.findViewById(R.id.board_cardView);
+            /*
+            CardRarityBar = itemView.findViewById(R.id.starsBar);
+            CardName = itemView.findViewById(R.id.card_name_textview);
+            CardCost = itemView.findViewById(R.id.cost_textview);
+            CardHealth = itemView.findViewById(R.id.health_textview);
+            CardAttack = itemView.findViewById(R.id.attack_textview);
+            CardType = itemView.findViewById(R.id.type_textview);
+            CardRace = itemView.findViewById(R.id.race_textview);
+            Glower = itemView.findViewById(R.id.hand_card_glow);
+            */
+            this.bAdapter = adapter;
+
+            CellCardItemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("CELL CLICKED", "clicked clicked clicked");
+                    //=====================test========================
+                    if (mListener != null) {
+                        int position = getAdapterPosition();
+                        int row = position/5;
+                        int col = position%5;
+                        mListener.onBoardCellClick(row, col);
+                    } else {
+
+                        Log.e("Listener is null", "uh oh");
+                    }
+
+                }
+            });
+            // End of ViewHolder initialization
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @NonNull
     @Override
@@ -107,11 +156,13 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
 
 
-        return new CellViewHolder(view);
+        return new CellViewHolder(view, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CellViewHolder holder, int position) {
+        Log.e("BOARD LOADING", "LOADING");
+
         int col = position % boardData.length;
         int row = position / boardData.length;
 
@@ -148,23 +199,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         Uri uri;
         if (mImagePath == "") {
             uri = Uri.parse("");
-            if(GameActivity.clickable[row][col]) {
-                ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
-                        Color.argb(255, 230, 255, 230));
-            }
-            else {
-                ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
-                        Color.argb(255, 255, 255, 255));
-            }
         }
         else {
             mImagePath = mImagePath.replaceFirst("[.][^.]+$", "");
             uri = Uri.parse("android.resource://com.example.cardlords3/drawable/" + mImagePath);
-        }
-
-        if(GameActivity.clickable[row][col]) {
-            ((CardView)(holder.itemView.findViewById(R.id.board_cardView))).setCardBackgroundColor(
-                    Color.argb(255, 230, 255, 230));
         }
         // Set up View items for this row (position), modify to show correct information read from the CSV
         //holder.CardName.setText(name);
@@ -204,6 +242,20 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
         if (BoardCells[row][col].owner == 1)
             holder.itemView.setRotation(180);
 
+
+        if(GameActivity.clickable[row][col]) {
+            //GLOW
+            ((TextView)(holder.itemView.findViewById(R.id.board_card_glow))).setBackgroundColor(
+                    Color.argb(50, 50, 255, 0));
+            ((TextView)(holder.itemView.findViewById(R.id.board_card_glow))).setVisibility(View.VISIBLE);
+        }
+        else {
+            ((TextView)(holder.itemView.findViewById(R.id.board_card_glow))).setBackgroundColor(
+                    Color.argb(0, 255, 255, 255));
+            ((TextView)(holder.itemView.findViewById(R.id.board_card_glow))).setVisibility(View.INVISIBLE);
+        }
+
+
         //TODO Read Card Data
         //TODO END of Read Card Data
 
@@ -212,14 +264,5 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.CellViewHold
     @Override
     public int getItemCount() {
         return boardData.length * boardData[0].length;
-    }
-
-    public static class CellViewHolder extends RecyclerView.ViewHolder {
-        //public CellFragment cellFragment;
-
-        public CellViewHolder(@NonNull View itemView) {
-            super(itemView);
-            //cellFragment = (CellFragment) getChildFragmentManager().findFragmentById(R.id.cell_fragment_container);
-        }
     }
 }
