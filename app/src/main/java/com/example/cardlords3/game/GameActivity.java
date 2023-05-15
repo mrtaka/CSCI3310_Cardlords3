@@ -25,6 +25,10 @@ import com.example.cardlords3.game.main.BoardAdapter;
 import com.example.cardlords3.game.main.BoardFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -127,6 +131,9 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         int[] enemyDeckDummy = new int[]{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4};
         int[] ownDeckDummy = new int[]{1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4};
 
+        enemyDeck = new ArrayList<>();
+        ownDeck = new ArrayList<>();
+
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 BoardCells[i][j] = new Cell();
@@ -150,177 +157,183 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         List<Integer> intList = Arrays.asList(intArray);
         intList.toArray(intArray);
         */
-        enemyDeck = new ArrayList<>();
-        for (int i : enemyDeckDummy) {
-            enemyDeck.add(i);
-        }
+        loadOwnDeck(new OnDeckLoadedCallback() {
+            @Override
+            public void onDeckLoaded(List<Long> deck) {
+                for (Long i : deck) {
+                    ownDeck.add(i.intValue());
+                    enemyDeck.add(i.intValue());
+                }
 
-        ownDeck = new ArrayList<>();
-        for (int i : ownDeckDummy) {
-            ownDeck.add(i);
-        }
+                // Shuffle the deck
+                Collections.shuffle(ownDeck);
+                Collections.shuffle(enemyDeck);
 
-        enemyHand = new ArrayList<>();
-        enemyBase = new ArrayList<>();
+                Log.e("OwnDeck2", ownDeck.toString());
+                Log.e("EnemyDeck", enemyDeck.toString());
 
-        ownHand = new ArrayList<>();
-        ownBase = new ArrayList<>();
+                enemyHand = new ArrayList<>();
+                enemyBase = new ArrayList<>();
 
-        //TODO: Manipulate Data
-        Collections.shuffle(enemyDeck);
-        Collections.shuffle(ownDeck);
+                ownHand = new ArrayList<>();
+                ownBase = new ArrayList<>();
 
-        //TODO: Board Fragments
+                // Rest of the dependent code...
+
+                //TODO: Board Fragments
         /*
         Fragment newEnemyBaseFragment1 = new BaseFragment(1);
         Fragment newBoardFragment = new BoardFragment(BoardCells, this);
         Fragment newOwnBaseFragment2 = new BaseFragment(0);
         */
 
-        //TopFragment topFragment = new TopFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.enemy_base_fragment_container, newEnemyBaseFragment1)
-                .commit();
+                //TopFragment topFragment = new TopFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.enemy_base_fragment_container, newEnemyBaseFragment1)
+                        .commit();
 
-        //MiddleFragment middleFragment = new MiddleFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.board_fragment_container, newBoardFragment)
-                .commit();
+                //MiddleFragment middleFragment = new MiddleFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.board_fragment_container, newBoardFragment)
+                        .commit();
 
-        //BottomFragment bottomFragment = new BottomFragment();
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.own_base_fragment_container, newOwnBaseFragment2)
-                .commit();
+                //BottomFragment bottomFragment = new BottomFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.own_base_fragment_container, newOwnBaseFragment2)
+                        .commit();
 
-        loadJson();
-        Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
+                loadJson();
+                Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
-        //TODO: Get a references to Views
-        View enemyDeckView = findViewById(R.id.enemy_deck);
-        View ownDeckView = findViewById(R.id.own_deck);
-        TextView enemyDeckCountView = findViewById(R.id.enemy_deck_count);
-        TextView ownDeckCountView = findViewById(R.id.own_deck_count);
-        Button turnEndButton = findViewById(R.id.turnEndButton);
+                //TODO: Get a references to Views
+                View enemyDeckView = findViewById(R.id.enemy_deck);
+                View ownDeckView = findViewById(R.id.own_deck);
+                TextView enemyDeckCountView = findViewById(R.id.enemy_deck_count);
+                TextView ownDeckCountView = findViewById(R.id.own_deck_count);
+                Button turnEndButton = findViewById(R.id.turnEndButton);
 
-        TextView closeCardInfoButton = findViewById(R.id.close_button);
-        Button moveButton = findViewById(R.id.move_button);
-        Button attackButton = findViewById(R.id.attack_button);
-        Button skillButton = findViewById(R.id.skill_button);
-        Button informationButton = findViewById(R.id.info_button);
+                TextView closeCardInfoButton = findViewById(R.id.close_button);
+                Button moveButton = findViewById(R.id.move_button);
+                Button attackButton = findViewById(R.id.attack_button);
+                Button skillButton = findViewById(R.id.skill_button);
+                Button informationButton = findViewById(R.id.info_button);
 
-        loadDeck(enemyDeck.size(), enemyDeckView, enemyDeckCountView);
-        loadDeck(ownDeck.size(), ownDeckView, ownDeckCountView);
+                loadDeck(enemyDeck.size(), enemyDeckView, enemyDeckCountView);
+                loadDeck(ownDeck.size(), ownDeckView, ownDeckCountView);
 
 
-        //TODO: Deck Views
+                //TODO: Deck Views
 
-        // Set a click listener on enemyDeckView
-        enemyDeckView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (enemyDeckDrawable > 0) {
-                    enemyDeckDrawable--;
-                    if (enemyDeckDrawable == 0) {
-                        CardView enemyDeckColorView = findViewById(R.id.enemy_deck_color);
-                        enemyDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
-                        enemyDeckColorView.invalidate();
+                // Set a click listener on enemyDeckView
+                enemyDeckView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (enemyDeckDrawable > 0) {
+                            enemyDeckDrawable--;
+                            if (enemyDeckDrawable == 0) {
+                                CardView enemyDeckColorView = findViewById(R.id.enemy_deck_color);
+                                enemyDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
+                                enemyDeckColorView.invalidate();
+                            }
+                            EnemyDrawDeck(1, enemyHand, true);
+                            loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1, hand_Position, hand_side, 1);
+                        }
                     }
-                    EnemyDrawDeck(1, enemyHand, true);
-                    loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), true, 1, hand_Position, hand_side, 1);
-                }
-            }
-        });
-        // Set a click listener on ownDeckView
-        ownDeckView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ownDeckDrawable > 0) {
-                    ownDeckDrawable--;
-                    if (ownDeckDrawable == 0) {
-                        CardView ownDeckColorView = findViewById(R.id.own_deck_color);
-                        ownDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
-                        ownDeckColorView.invalidate();
+                });
+                // Set a click listener on ownDeckView
+                ownDeckView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ownDeckDrawable > 0) {
+                            ownDeckDrawable--;
+                            if (ownDeckDrawable == 0) {
+                                CardView ownDeckColorView = findViewById(R.id.own_deck_color);
+                                ownDeckColorView.setCardBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.teal_700));
+                                ownDeckColorView.invalidate();
+                            }
+                            OwnDrawDeck(1, ownHand, true);
+                            loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0, hand_Position, hand_side, 1);
+                        }
                     }
-                    OwnDrawDeck(1, ownHand, true);
-                    loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), true, 0, hand_Position, hand_side, 1);
-                }
-            }
-        });
-        //TODO -  Set a click listener on turnEndButton
-        turnEndButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TurnEnd();
-                loadBoard();
-            }
-        });
-        //TODO -  Set a click listener on CloseCardInfoButton
-        closeCardInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (menuOpen) {
-                    CloseOptions();
-                }
-            }
-        });
-        //TODO -  Set a click listener on MoveButton
-        moveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (movable) {
-                    CloseOptions();
-                }
-            }
-        });
-        //TODO -  Set a click listener on AttackButton
-        attackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (attackable) {
-                    CloseOptions();
-                }
-            }
-        });
-        //TODO -  Set a click listener on SkillButton
-        skillButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (skillable) {
-                    CloseOptions();
-                }
-            }
-        });
-        //TODO -  Set a click listener on InformationButton
-        informationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (menuOpen) {
-                    CloseOptions();
-                }
+                });
+                //TODO -  Set a click listener on turnEndButton
+                turnEndButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TurnEnd();
+                        loadBoard();
+                    }
+                });
+                //TODO -  Set a click listener on CloseCardInfoButton
+                closeCardInfoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (menuOpen) {
+                            CloseOptions();
+                        }
+                    }
+                });
+                //TODO -  Set a click listener on MoveButton
+                moveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (movable) {
+                            CloseOptions();
+                        }
+                    }
+                });
+                //TODO -  Set a click listener on AttackButton
+                attackButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (attackable) {
+                            CloseOptions();
+                        }
+                    }
+                });
+                //TODO -  Set a click listener on SkillButton
+                skillButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (skillable) {
+                            CloseOptions();
+                        }
+                    }
+                });
+                //TODO -  Set a click listener on InformationButton
+                informationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (menuOpen) {
+                            CloseOptions();
+                        }
+                    }
+                });
+
+                TextView enemyDataTextView = findViewById(R.id.enemyDataView);
+                TextView ownDataTextView = findViewById(R.id.ownDataView);
+
+                loadData(enemyMaxMana, enemyMaxMoves, enemyHand.size(), enemyGraveCount, enemyDataTextView);
+                loadData(ownMaxMana, ownMaxMoves, ownHand.size(), ownGraveCount, ownDataTextView);
+
+                //TODO: TURN 1
+                //TODO: Draw 5 to Hand
+                EnemyDrawDeck(5, enemyHand, false);
+                OwnDrawDeck(5, ownHand, false);
+                loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, 1);
+                loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, 1);
+
+                //TODO: Draw 5 to Base
+                EnemyDrawDeck(5, enemyBase, false);
+                OwnDrawDeck(5, ownBase, false);
+                loadBase(ownBase, findViewById(R.id.own_base_fragment_container));
+                loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
+
+                //EndZone and enemy draw
+                //EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
             }
         });
 
-        TextView enemyDataTextView = findViewById(R.id.enemyDataView);
-        TextView ownDataTextView = findViewById(R.id.ownDataView);
-
-        loadData(enemyMaxMana, enemyMaxMoves, enemyHand.size(), enemyGraveCount, enemyDataTextView);
-        loadData(ownMaxMana, ownMaxMoves, ownHand.size(), ownGraveCount, ownDataTextView);
-
-        //TODO: TURN 1
-        //TODO: Draw 5 to Hand
-        EnemyDrawDeck(5, enemyHand, false);
-        OwnDrawDeck(5, ownHand, false);
-        loadHand(enemyHand, findViewById(R.id.cardRecyclerViewEnemyHand), false, 1, hand_Position, hand_side, 1);
-        loadHand(ownHand, findViewById(R.id.cardRecyclerViewOwnHand), false, 0, hand_Position, hand_side, 1);
-
-        //TODO: Draw 5 to Base
-        EnemyDrawDeck(5, enemyBase, false);
-        OwnDrawDeck(5, ownBase, false);
-        loadBase(ownBase, findViewById(R.id.own_base_fragment_container));
-        loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
-
-        //EndZone and enemy draw
-        //EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
     }
 
 //TODO: Functions
@@ -1047,5 +1060,34 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
             e.printStackTrace();
         }
     }
+    private void loadOwnDeck(OnDeckLoadedCallback callback) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String uid = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference docRef = db.collection("users").document(uid);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            List<Long> deck = (List<Long>) document.get("inventory");
+                            callback.onDeckLoaded(deck);
+                        } else {
+                            Log.d("Firestore", "No such document");
+                        }
+                    } else {
+                        Log.d("Firestore", "get failed with ", task.getException());
+                    }
+                }
+            });
+        } else {
+            // No user is signed in
+        }
+    }
 
+    private interface OnDeckLoadedCallback {
+        void onDeckLoaded(List<Long> deck);
+    }
 }
