@@ -91,4 +91,18 @@
 
     </LinearLayout>
 
+    <ImageButton
+        android:id="@+id/my_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/round_button"
+        android:onClick="GoToRoll"
+        android:scaleType="fitXY"
+        android:src="@drawable/roll_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

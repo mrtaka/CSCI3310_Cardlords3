@@ -24,6 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,17 +109,17 @@ public class CardEditorFragment extends Fragment {
         TextView id = view.findViewById(R.id.card_id_text_view);
         id.setText(Integer.toString(Param_cardID));
 
-        EditText name = view.findViewById(R.id.edit_name);
+        TextView name = view.findViewById(R.id.edit_name);
         name.setText(Param_cardName);
 
-        EditText cost = view.findViewById(R.id.editCost);
+        TextView cost = view.findViewById(R.id.editCost);
         //cost.setInputType(InputType.TYPE_CLASS_NUMBER);
         cost.setText(String.valueOf(Param_cost));
 
-        EditText health = view.findViewById(R.id.editHealth);
+        TextView health = view.findViewById(R.id.editHealth);
         health.setText(String.valueOf(Param_health));
 
-        EditText attack = view.findViewById(R.id.editAttack);
+        TextView attack = view.findViewById(R.id.editAttack);
         attack.setText(String.valueOf(Param_attack));
 
         Button editCardButton = view.findViewById(R.id.editCardFromCardListButton);
@@ -139,6 +142,11 @@ public class CardEditorFragment extends Fragment {
                     intent.putExtra("raceID", Param_race);//send position to new activity
                     intent.putExtra("card_Image", Param_image);//send position to new activity
                     startActivity(intent); //launch new activity
+                    // Destroy the Fragment here
+                    /*CardEditorFragment fragment = (CardEditorFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    if (fragment != null) {
+                        fragment.onDestroyView();
+                    }*/
                 }
             }
         });
@@ -167,6 +175,10 @@ public class CardEditorFragment extends Fragment {
                                                         public void onSuccess(Void aVoid) {
                                                             Log.d("DeleteCard", "DocumentSnapshot successfully deleted!");
                                                             Toast.makeText(getActivity(), "Delete card with cardID " + Param_cardID, Toast.LENGTH_SHORT).show();
+                                                            //=======return back to menu activity================
+                                                            Intent resultIntent = new Intent();
+                                                            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                                                            getActivity().finish();
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {

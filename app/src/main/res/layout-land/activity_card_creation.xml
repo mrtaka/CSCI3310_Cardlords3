@@ -4,8 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/edit_bg"
     tools:context=".CardCreationActivity">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/edit_bg2"
+        android:rotation="180"/>
 
     <View
         android:layout_width="match_parent"
@@ -17,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <include
             layout="@layout/cardlist_card"
@@ -25,11 +31,11 @@
             android:layout_height="wrap_content" />
 
         <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="350dp"
+            android:layout_height="200dp"
             app:cardElevation="10dp"
             app:cardCornerRadius="10dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="50dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             app:cardBackgroundColor="@color/white"
@@ -39,10 +45,10 @@
 
             <LinearLayout android:orientation="vertical"
                 android:layout_height="fill_parent"
-                android:layout_width="fill_parent">
+                android:layout_width="wrap_content">
 
             <TableLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="15dp"
                 android:paddingLeft="15dp"
@@ -71,7 +77,7 @@
                         android:text="Cost" />
                     <EditText
                         android:id="@+id/editCost"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
@@ -105,7 +111,7 @@
                         android:text="Health" />
                     <EditText
                         android:id="@+id/editHealth"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
@@ -124,7 +130,7 @@
                     android:rowCount="2"
                     android:columnCount="2">
                     <LinearLayout android:orientation="horizontal"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:gravity="center">
                         <Button
@@ -150,7 +156,7 @@
                             android:onClick="plusRarity"/>
                     </LinearLayout>
                     <LinearLayout android:orientation="horizontal"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="48dp"
                         android:gravity="center">
@@ -177,7 +183,7 @@
                             android:onClick="plusType"/>
                     </LinearLayout>
                     <LinearLayout android:orientation="horizontal"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:gravity="center">
                         <Button
@@ -203,7 +209,7 @@
                             android:onClick="plusSkill"/>
                     </LinearLayout>
                     <LinearLayout android:orientation="horizontal"
-                        android:layout_height="fill_parent"
+                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="48dp"
                         android:gravity="center">
