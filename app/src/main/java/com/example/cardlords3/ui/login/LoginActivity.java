@@ -179,7 +179,6 @@ public class LoginActivity extends AppCompatActivity {
     public void logIn(View view) {
         String email = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-        Log.e(TAG, email+password);
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
