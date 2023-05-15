@@ -5,6 +5,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,6 +43,7 @@ public class CardDeckActivity extends AppCompatActivity {
     private JSONArray CardJsonArray = new JSONArray();
     private JSONArray InventoryJsonArray = new JSONArray();
     private int[] inventory;
+    private int card_count = 0;
 
     FirebaseUser user;
     FirebaseFirestore db;
@@ -290,6 +293,7 @@ public class CardDeckActivity extends AppCompatActivity {
                                                     Log.d("Firestore", "DocumentSnapshot successfully updated!");
                                                     //set the num of card textview
                                                     CardNumView.setText(String.valueOf(inventoryList.size()));
+                                                    card_count = inventoryList.size();
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -314,6 +318,7 @@ public class CardDeckActivity extends AppCompatActivity {
             else{
                 //set the num of card textview when no need clean
                 CardNumView.setText(String.valueOf(inventory.length));
+                card_count = inventory.length;
             }
 
         }catch (Exception e)
@@ -335,5 +340,11 @@ public class CardDeckActivity extends AppCompatActivity {
         }
 
         return newArray;
+    }
+
+    public void GoToRoll(View view) {
+        Intent intent = new Intent(this, RollCardActivity.class); //set the target activity
+        intent.putExtra("card_count", card_count);//send position to new activity
+        ((Activity)this).startActivityForResult(intent,1); //launch new activity
     }
 }
