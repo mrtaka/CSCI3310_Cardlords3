@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = binding.username;
         passwordEditText = binding.password;
         final Button loginButton = binding.login;
+        final Button signupButton = binding.signup;
         final ProgressBar loadingProgressBar = binding.loading;
         mAuth = FirebaseAuth.getInstance();
 
@@ -69,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 loginButton.setEnabled(loginFormState.isDataValid());
+                signupButton.setEnabled(loginFormState.isDataValid());
                 if (loginFormState.getUsernameError() != null) {
                     usernameEditText.setError(getString(loginFormState.getUsernameError()));
                 }
@@ -128,7 +130,15 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUp(v);
+                loadingProgressBar.setVisibility(View.VISIBLE);
+                loginViewModel.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
+            }
+        });
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,9 +151,35 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    public void signUp(View view) {
+        String email = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            passwordEditText.setText("");
+                            Log.d("TAG", "createUserWithEmail:success");
+                            Toast.makeText(LoginActivity.this, "Account created.",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(getApplicationContext(), MenuActivity.class);
+                            //i.putExtra("key",value);
+                            startActivity(i);
+                        } else {
+                            Log.w("TAG", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Account creation failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     public void logIn(View view) {
         String email = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        Log.e(TAG, email+password);
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -152,13 +188,18 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             passwordEditText.setText("");
                             Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(LoginActivity.this, "Login successfully",
+                            Toast.makeText(LoginActivity.this, "Logged in",
                                     Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(getApplicationContext(), MenuActivity.class);
                             //i.putExtra("key",value);
                             startActivity(i);
                         } else {
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Login failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            /*
                             // Account does not exist. Sign up instead
+
                             mAuth.createUserWithEmailAndPassword(email, password)
                                     .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                         @Override
@@ -175,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         Toast.LENGTH_SHORT).show();
                                             }
                                         }
-                                    });
+                                    }); */
                         }
                     }
                 });
