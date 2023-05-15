@@ -36,6 +36,7 @@ public class RollCardActivity extends AppCompatActivity implements ShakeDetector
         sensorManager.registerListener(mShakeDetector, accelerometerSensor, SensorManager.SENSOR_DELAY_UI);
 
         TotalCardTextView = this.findViewById(R.id.card_number_text);
+        TotalCardTextView.setText(Integer.toString(exist_card + count));
         AddCardTextView = this.findViewById(R.id.addCardNum);
     }
     /*

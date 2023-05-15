@@ -150,7 +150,7 @@ public class CardDeckFragment extends Fragment {
                                                             public void onSuccess(Void aVoid) {
                                                                 Log.d("DeleteFromDeck", "DocumentSnapshot successfully updated!");
                                                                 Toast.makeText(getActivity(), "Removed card in position " + Param_position, Toast.LENGTH_SHORT).show();
-                                                                //return back
+                                                                //=======return back to menu activity================
                                                                 Intent resultIntent = new Intent();
                                                                 getActivity().setResult(Activity.RESULT_OK, resultIntent);
                                                                 getActivity().finish();

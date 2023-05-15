@@ -167,6 +167,10 @@ public class CardEditorFragment extends Fragment {
                                                         public void onSuccess(Void aVoid) {
                                                             Log.d("DeleteCard", "DocumentSnapshot successfully deleted!");
                                                             Toast.makeText(getActivity(), "Delete card with cardID " + Param_cardID, Toast.LENGTH_SHORT).show();
+                                                            //=======return back to menu activity================
+                                                            Intent resultIntent = new Intent();
+                                                            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                                                            getActivity().finish();
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
