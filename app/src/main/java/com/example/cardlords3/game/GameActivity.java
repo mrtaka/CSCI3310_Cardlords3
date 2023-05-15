@@ -341,9 +341,64 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         boardRecyclerView.invalidate();
     }
     */
-    //TODO: End Turn
+
+    //TODO: Auto Move Up one
+    private void AutoUp(int side) {
+        if (side == 0) {
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (BoardCells[i][j].owner == side) {
+                        if (i>0) {
+                            if (BoardCells[i-1][j].cellID == -1)
+                                //Move 1 up
+                                Move(i,j, i-1,j);
+                        } else {
+                            //Move to Base
+                            Log.e("Test1","");
+                            if (enemyBase.get(j) != -1) {
+                                Log.e("Test2","");
+                                Destroy(i, j);
+                                EndZone(j, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else {
+            for (int i = 4; i >= 0; i--) {
+                for (int j = 0; j < 5; j++) {
+                    if (BoardCells[i][j].owner == side) {
+                        if (i<4) {
+                            if (BoardCells[i+1][j].cellID == -1)
+                                //Move 1 down
+                                Move(i,j, i+1,j);
+                        } else {
+                            //Move to Base
+                            if (enemyBase.get(j) != -1) {
+                                Destroy(i,j);
+                                EndZone(j, ownBase, findViewById(R.id.own_base_fragment_container));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void Destroy(int i, int j) {
+        BoardCells[i][j] = new Cell();
+        BoardCells[i][j].cellID = -1;
+    }
+
+    private void Move(int i1, int j1, int i2, int j2) {
+        BoardCells[i2][j2] = BoardCells[i1][j1];
+        BoardCells[i1][j1] = new Cell();
+    }
+
     private void TurnEnd() {
         turn++;
+        AutoUp(turn%2);
         loadTurn(findViewById(R.id.turnDataView));
         Button turnEndButton = findViewById(R.id.turnEndButton);
         turnEndButton.setRotation((turn+1)%2*180);
@@ -862,6 +917,10 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
 
     //TODO: Base info
     private void loadBase(List<Integer> Base, View baseView) {
+        /*
+        ((BaseFragment)newEnemyBaseFragment1).SendBase(Base);
+        ((BaseFragment)newOwnBaseFragment2).SendBase(Base);
+        */
         baseView.invalidate();
     }
 

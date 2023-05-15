@@ -75,6 +75,7 @@ public class BaseFragment extends Fragment {
 
         return view;
     }
+
 }
 
 /*
