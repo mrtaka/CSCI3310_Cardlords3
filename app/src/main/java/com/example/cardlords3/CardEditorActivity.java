@@ -27,6 +27,8 @@ public class CardEditorActivity extends AppCompatActivity {
     //JSONArray CardJsonArray2 = null;
     RecyclerView.LayoutManager layoutManager;
 
+    private JSONArray CardJsonArray = new JSONArray();
+
     private interface OnCardListLoadedCallback {
         void onCardListLoaded(JSONArray CardJsonArray);
     }
@@ -36,7 +38,34 @@ public class CardEditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_editor);
+        CardJsonArray = new JSONArray();
+        //load default data from json
+        /*
+        loadJson(new OnCardListLoadedCallback() {
+            @Override
+            public void onCardListLoaded(JSONArray CardJsonArray) {
+                Log.e("Tag", "the loaded CardJsonArray is " + CardJsonArray);
 
+                //load a default creation card
+                addCreateCard(CardJsonArray);
+                Log.e("Tag", "the added creation card CardJsonArray is " + CardJsonArray);
+
+                //create recyclerview
+                mRecyclerView = findViewById(R.id.cardRecyclerView);
+                mAdapter = new CardListAdapter(CardEditorActivity.this, CardJsonArray, getSupportFragmentManager(), 2);
+                // Connect the adapter with the RecyclerView.
+                mRecyclerView.setAdapter(mAdapter);
+                // Give the RecyclerView a default layout manager.
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(CardEditorActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            }
+        });*/
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // Refresh the activity content here
+        // For example, reload data from a database or server
+        CardJsonArray = new JSONArray();
         //load default data from json
         loadJson(new OnCardListLoadedCallback() {
             @Override

@@ -24,6 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -139,6 +142,11 @@ public class CardEditorFragment extends Fragment {
                     intent.putExtra("raceID", Param_race);//send position to new activity
                     intent.putExtra("card_Image", Param_image);//send position to new activity
                     startActivity(intent); //launch new activity
+                    // Destroy the Fragment here
+                    /*CardEditorFragment fragment = (CardEditorFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    if (fragment != null) {
+                        fragment.onDestroyView();
+                    }*/
                 }
             }
         });
