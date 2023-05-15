@@ -108,7 +108,7 @@ public class BoardFragment extends Fragment {
     private void loadJson(){
         try{
             //load json
-            InputStream inputStream = getResources().openRawResource(R.raw.cardlist);
+            InputStream inputStream = requireContext().openFileInput("cardlist.json");
             int size = inputStream.available();
             byte[] buffer=new byte[size];
             inputStream.read(buffer);
@@ -119,9 +119,9 @@ public class BoardFragment extends Fragment {
             int max;
 
             json = new String(buffer, StandardCharsets.UTF_8);
-            JSONObject jsonObject = new JSONObject(json);
+            //JSONObject jsonObject = new JSONObject(json);
             //Log.e("Tag", "the json is " + jsonObject);
-            CardJsonArray = new JSONArray(jsonObject.getString("Cards"));
+            CardJsonArray = new JSONArray(json);
             //Log.e("Tag", "the jsonArray is " + CardJsonArray);
             max = CardJsonArray.length();
 
@@ -136,6 +136,7 @@ public class BoardFragment extends Fragment {
             Log.e("Tag", "loadJson: error "+e);
         }
     }
+
 
     private void inventoryJson(int[] inventory){
         try{
