@@ -308,7 +308,7 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         loadBase(enemyBase, findViewById(R.id.enemy_base_fragment_container));
 
         //EndZone and enemy draw
-        EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+        //EndZone(1, enemyBase, findViewById(R.id.enemy_base_fragment_container));
     }
 
 //TODO: Functions
@@ -354,12 +354,11 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                                 Move(i,j, i-1,j);
                         } else {
                             //Move to Base
-                            Log.e("Test1","");
-                            if (enemyBase.get(j) != -1) {
-                                Log.e("Test2","");
-                                Destroy(i, j);
-                                EndZone(j, enemyBase, findViewById(R.id.enemy_base_fragment_container));
-                            }
+                            //if (enemyBase.get(j) != -1) {
+                            Log.e("Test2","");
+                            Destroy(i, j);
+                            //EndZone(j, enemyBase, findViewById(R.id.enemy_base_fragment_container));
+                            //}
                         }
                     }
                 }
@@ -375,10 +374,10 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
                                 Move(i,j, i+1,j);
                         } else {
                             //Move to Base
-                            if (enemyBase.get(j) != -1) {
+                            //if (enemyBase.get(j) != -1) {
                                 Destroy(i,j);
-                                EndZone(j, ownBase, findViewById(R.id.own_base_fragment_container));
-                            }
+                                //EndZone(j, ownBase, findViewById(R.id.own_base_fragment_container));
+                            //}
                         }
                     }
                 }
@@ -386,9 +385,8 @@ public class GameActivity extends AppCompatActivity implements CardListAdapterBo
         }
     }
 
-    private void Destroy(int i, int j) {
-        BoardCells[i][j] = new Cell();
-        BoardCells[i][j].cellID = -1;
+    private void Destroy(int i1, int j1) {
+        BoardCells[i1][j1] = new Cell();
     }
 
     private void Move(int i1, int j1, int i2, int j2) {
